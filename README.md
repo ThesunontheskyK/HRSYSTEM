@@ -1,4 +1,4 @@
-🏥 HR System: Joseph Thiphawan School
+<img width="128" height="128" alt="image" src="https://github.com/user-attachments/assets/5acf10a9-9897-4d96-b736-225c128df15c" />🏥 HR System: Joseph Thiphawan School
 
 ระบบบริหารจัดการทรัพยากรบุคคลยุคใหม่ เพื่อการเปลี่ยนผ่านสู่ดิจิทัลอย่างเต็มรูปแบบ
 
@@ -32,7 +32,7 @@ Framework: Bootstrap (UI Components)
 
 Design: Responsive Web Design 
 
-Backend
+📂Backend
 
 Engine: Node.js (V8 Engine) 
 
@@ -42,7 +42,7 @@ Framework: Express.js
 
 Architecture: RESTful API 
 
-Database & Security
+🗄️Database & Security
 
 Database: MySQL 
 +1
