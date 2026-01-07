@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="th">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>จัดการคำร้องทั้งหมด - Admin Panel</title>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="CSS/admin-requests.css">
+    </head>
+    <body>
+        <!-- ========== SIDEBAR ========== -->
+        <div class="sidebar">
+            <div class="profile">
+                <img id="sidebarProfilePic" src="/uploads/default.png"
+                    alt="Profile" class="profile-pic">
+                <h3 id="username">ชื่อผู้ใช้</h3>
+                <h4 id="subjectname">Admin</h4>
+            </div>
+            <nav class="menu">
+                <a href="admin-dashboard.html">📊 หน้าหลัก</a>
+                <a href="admin_sendrequest.html">📝 ยื่นคำร้อง</a>
+                <a href="admin-requests.html">✅ อนุมัติคำร้อง</a>
+                <a href="admin_status.html">📋 ติดตามคำร้อง</a>
+                <a href="myemp.html">👥 จัดการบุคลากร</a>
+                <a href="admin-check.html">📊 การเข้างาน</a>
+                <a href="cal.html">💰 คำนวนเงินเดือน</a>
+                <a href="profile.html">👤 แก้ไขโปรไฟล์</a>
+                <button onclick="logout()" type="button">🚪 ออกจากระบบ</button>
+            </nav>
+        </div>
+
+        <!-- ========== MAIN CONTENT ========== -->
+        <div class="main-content">
+            <h1>จัดการคำร้องลาทั้งหมด</h1>
+            <p id="userInfo">กำลังโหลดข้อมูลผู้ใช้...</p>
+
+            <div class="request-container">
+                <!-- Dashboard Header -->
+                <div class="dashboard-header">
+                    <h2>ระบบจัดการคำร้องลา</h2>
+                    <p>จัดการและติดตามคำร้องลาของพนักงานตามสิทธิ์ของท่าน</p>
+                    <div class="info-note">
+                        <p>
+                            <strong>หมายเหตุ:</strong>
+                            ท่านสามารถเห็นและจัดการคำร้องของ <span
+                                id="subjectArea">กำลังโหลด...</span>
+                            ตามสิทธิ์ของตำแหน่งงาน
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card pending">
+                        <div class="stat-content">
+                            <div class="stat-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round"
+                                        stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <div class="stat-info">
+                                <p class="stat-label">รอการอนุมัติ</p>
+                                <p class="stat-number" id="pendingCount">0</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card approved">
+                        <div class="stat-content">
+                            <div class="stat-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round"
+                                        stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+                            <div class="stat-info">
+                                <p class="stat-label">อนุมัติแล้ว</p>
+                                <p class="stat-number" id="approvedCount">0</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card rejected">
+                        <div class="stat-content">
+                            <div class="stat-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round"
+                                        stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </div>
+                            <div class="stat-info">
+                                <p class="stat-label">ปฏิเสธแล้ว</p>
+                                <p class="stat-number" id="rejectedCount">0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filter and Search -->
+                <div class="filter-container">
+                    <div class="filter-content">
+                        <div class="filter-row">
+                            <div class="filter-group">
+                                <span class="filter-label">สถานะ:</span>
+                                <select id="status-filter"
+                                    class="filter-select">
+                                    <option value="all">ทั้งหมด</option>
+                                    <option
+                                        value="pending">รอการอนุมัติ</option>
+                                    <option
+                                        value="approved">อนุมัติแล้ว</option>
+                                    <option value="rejected">ปฏิเสธแล้ว</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <span class="filter-label">ประเภท:</span>
+                                <select id="type-filter" class="filter-select">
+                                    <option value="all">ทั้งหมด</option>
+                                    <option value="sick">ลาป่วย</option>
+                                    <option value="personal">ลากิจ</option>
+                                    <option
+                                        value="maternity">ลาคลอดบุตร</option>
+                                    <option
+                                        value="training">ลาฝึกอบรม/สัมมนา</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <span class="filter-label">ตำแหน่ง:</span>
+                                <select id="role-filter" class="filter-select">
+                                    <option value="all">ทั้งหมด</option>
+                                    <optgroup label="ครู">
+                                        <option
+                                            value="mathteacher">ครูคณิตศาสตร์</option>
+                                        <option
+                                            value="engteacher">ครูภาษาอังกฤษ</option>
+                                        <option
+                                            value="computerteacher">ครูคอมพิวเตอร์</option>
+                                        <option
+                                            value="sciteacher">ครูวิทยาศาสตร์</option>
+                                        <option
+                                            value="socialteacher">ครูสังคมศึกษา</option>
+                                        <option
+                                            value="thaiteacher">ครูภาษาไทย</option>
+                                        <option
+                                            value="kindergarten_teacher">ครูปฐมวัย</option>
+                                    </optgroup>
+                                    <optgroup label="หัวหน้าหมวดวิชา">
+                                        <option
+                                            value="head_of_math">หัวหน้าหมวดคณิตศาสตร์</option>
+                                        <option
+                                            value="head_of_eng">หัวหน้าหมวดภาษาอังกฤษ</option>
+                                        <option
+                                            value="head_of_computer">หัวหน้าหมวดคอมพิวเตอร์</option>
+                                        <option
+                                            value="head_of_sci">หัวหน้าหมวดวิทยาศาสตร์</option>
+                                        <option
+                                            value="head_of_social_studie">หัวหน้าหมวดสังคมศึกษา</option>
+                                        <option
+                                            value="head_of_thai">หัวหน้าหมวดภาษาไทย</option>
+                                    </optgroup>
+                                    <optgroup label="เจ้าหน้าที่">
+                                        <option
+                                            value="hr_staff">เจ้าหน้าที่บุคลากร</option>
+                                        <option
+                                            value="operation_staff">เจ้าหน้าที่บริหาร</option>
+                                        <option
+                                            value="pastoral_staff">เจ้าหน้าที่อภิบาล</option>
+                                        <option
+                                            value="quality_staff">เจ้าหน้าที่มาตรฐาน</option>
+                                        <option
+                                            value="resource_staff">เจ้าหน้าที่ทรัพยากร</option>
+                                        <option
+                                            value="student_affair_staff">เจ้าหน้าที่กิจการนักเรียน</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="search-container">
+                            <div class="search-wrapper">
+                                <input type="text" id="search-input"
+                                    placeholder="ค้นหาชื่อ, รหัสพนักงาน, หรือประเภทคำร้อง..."
+                                    class="search-input">
+                                <div class="search-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Request List -->
+                <div class="request-list-container">
+                    <div class="request-list-header">
+                        <h3>รายการคำร้องทั้งหมด</h3>
+                        <div style="display: flex; gap: 10px;">
+                            <button onclick="exportRequests()"
+                                class="refresh-btn">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round"
+                                        stroke-linejoin="round" stroke-width="2"
+                                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                ส่งออกข้อมูล
+                            </button>
+                            <button onclick="refreshRequests()"
+                                class="refresh-btn">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round"
+                                        stroke-linejoin="round" stroke-width="2"
+                                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
+                                รีเฟรช
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table class="requests-table">
+                            <thead>
+                                <tr>
+                                    <th>รหัสคำร้อง</th>
+                                    <th>ผู้ขอ</th>
+                                    <th>ตำแหน่ง</th>
+                                    <th>ประเภท</th>
+                                    <th>วันที่ขอ</th>
+                                    <th>วันที่ลา</th>
+                                    <th>สถานะ</th>
+                                    <th>การดำเนินการ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="request-list">
+                                <tr>
+                                    <td colspan="8" class="loading-cell">
+                                        <div class="loading-content">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none" viewBox="0 0 24 24"
+                                                stroke="currentColor">
+                                                <path stroke-linecap="round"
+                                                    stroke-linejoin="round"
+                                                    stroke-width="2"
+                                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                            </svg>
+                                            <p>กำลังโหลดข้อมูลคำร้อง...</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Request Detail Modal -->
+        <div id="request-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>รายละเอียดคำร้อง</h3>
+                    <button id="close-modal" class="modal-close">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="modal-section">
+                        <div class="modal-info-grid">
+                            <div class="modal-info-item">
+                                <h4>รหัสคำร้อง</h4>
+                                <span id="modal-request-id">-</span>
+                            </div>
+                            <div class="modal-info-item">
+                                <h4>ประเภท</h4>
+                                <span id="modal-request-type">-</span>
+                            </div>
+                            <div class="modal-info-item">
+                                <h4>วันที่ขอ</h4>
+                                <span id="modal-request-date">-</span>
+                            </div>
+                            <div class="modal-info-item">
+                                <h4>วันที่ลา</h4>
+                                <span id="modal-leave-period">-</span>
+                            </div>
+                            <div class="modal-info-item">
+                                <h4>สถานะ</h4>
+                                <span id="modal-request-status"
+                                    class="badge badge-pending">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">ข้อมูลผู้ขอ</h4>
+                        <div class="modal-user-info">
+                            <div class="user-avatar-row">
+                                <div class="modal-avatar">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                </div>
+                                <div class="user-details">
+                                    <p id="modal-requester-name"
+                                        class="user-name">-</p>
+                                    <p id="modal-requester-position"
+                                        class="user-position">-</p>
+                                </div>
+                            </div>
+                            <div class="user-info-grid">
+                                <div class="user-info-item">
+                                    <p class="info-label">อีเมล</p>
+                                    <p id="modal-requester-email"
+                                        class="info-value">-</p>
+                                </div>
+                                <div class="user-info-item">
+                                    <p class="info-label">รหัสพนักงาน</p>
+                                    <p id="modal-requester-id"
+                                        class="info-value">-</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">เหตุผลการลา</h4>
+                        <div class="modal-reason">
+                            <p id="modal-request-reason">-</p>
+                        </div>
+                    </div>
+
+                    <div class="modal-section">
+                        <h4 class="modal-section-title">บันทึกการอนุมัติ</h4>
+                        <textarea id="approval-note" class="modal-textarea"
+                            rows="3"
+                            placeholder="เพิ่มบันทึกการอนุมัติหรือปฏิเสธ (ไม่บังคับ)..."></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button id="modal-reject-btn"
+                        class="btn-reject">ปฏิเสธ</button>
+                    <button id="modal-approve-btn"
+                        class="btn-approve">อนุมัติ</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="loading-overlay hidden">
+            <div class="loading-spinner">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor"
+                    class="animate-spin">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                <p>กำลังประมวลผล...</p>
+            </div>
+        </div>
+
+        <script src="JS/admin-requests.js"></script>
+        <script src="JS/mobile-menu.js"></script>
+    </body>
+</html>

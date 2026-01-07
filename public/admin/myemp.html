@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8">
+    <title>จัดการพนักงาน - ระบบ HR</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css"
+      rel="stylesheet">
+    <link rel="stylesheet" href="CSS/myemp.css">
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.css">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap"
+      rel="stylesheet">
+  </head>
+  <body>
+
+    <div class="sidebar">
+      <div class="profile">
+        <img id="sidebarProfilePic" src="/uploads/default.png"
+          alt="Profile" class="profile-pic">
+        <div>
+          <h3 id="username">ชื่อผู้ใช้</h3>
+          <h4 id="subjectname">Admin</h4>
+        </div>
+      </div>
+      <nav class="menu">
+        <a href="admin-dashboard.html">📊 หน้าหลัก</a>
+        <a href="admin_sendrequest.html">📝 ยื่นคำร้อง</a>
+        <a href="admin-requests.html">✅ อนุมัติคำร้อง</a>
+        <a href="admin_status.html">📋 ติดตามคำร้อง</a>
+        <a href="myemp.html">👥 จัดการบุคลากร</a>
+        <a href="admin-check.html">📊 การเข้างาน</a>
+        <a href="cal.html">💰 คำนวนเงินเดือน</a>
+        <a href="profile.html">👤 แก้ไขโปรไฟล์</a>
+        <button onclick="logout()" type="button">🚪 ออกจากระบบ</button>
+      </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <section class="section">
+        <div class="container">
+          <!-- Permission Info will be inserted here by JavaScript -->
+
+          <!-- Search Header -->
+          <div class="row justify-content-center mb-4">
+            <div class="col-12">
+              <div
+                class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4 gap-3">
+                <div>
+                  <h2 class="mb-1 fs-3 fs-sm-2">จัดการพนักงาน</h2>
+                  <p
+                    class="text-muted mb-0 fs-6">ระบบจัดการข้อมูลพนักงานตามสิทธิ์การเข้าถึง</p>
+                </div>
+                <div class="d-flex gap-2">
+                  <!-- Add Employee Button (only for admin_hr) -->
+                  <button type="button" class="btn btn-success btn-sm"
+                    id="addEmployeeBtn"
+                    onclick="openAddEmployeeModal()">
+                    <i class="mdi mdi-plus"></i>
+                    <span class="d-none d-sm-inline">เพิ่มพนักงาน</span>
+                  </button>
+                  <button type="button" class="btn btn-outline-primary btn-sm"
+                    onclick="window.location.reload()">
+                    <i class="mdi mdi-refresh"></i>
+                    <span class="d-none d-sm-inline">รีเฟรช</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Search and Filter Section -->
+              <div class="candidate-list-widgets mb-4">
+                <form action="#" onsubmit="return false;">
+                  <div class="row g-2">
+                    <div class="col-12 col-sm-6 col-lg-4">
+                      <div class="input-group">
+                        <span class="input-group-text">
+                          <i class="mdi mdi-magnify"></i>
+                        </span>
+                        <input
+                          type="search"
+                          class="form-control"
+                          placeholder="ค้นหาชื่อ"
+                          id="searchInput" />
+                        <button type="button" class="btn btn-outline-secondary"
+                          onclick="clearSearch()" title="ล้างการค้นหา">
+                          <i class="mdi mdi-close"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-3">
+                      <select class="form-select" id="departmentFilter">
+                        <option value>ทุกแผนก/ตำแหน่ง</option>
+                        <option value="mathteacher">ครูคณิตศาสตร์</option>
+                        <option value="engteacher">ครูภาษาอังกฤษ</option>
+                        <option value="computerteacher">ครูคอมพิวเตอร์</option>
+                        <option value="sciteacher">ครูวิทยาศาสตร์</option>
+                        <option value="socialteacher">ครูสังคมศึกษา</option>
+                        <option value="thaiteacher">ครูภาษาไทย</option>
+                        <option value="kindergarten_teacher">ครูปฐมวัย</option>
+                        <option value="head_of_math">หัวหน้าหมวดคณิตฯ</option>
+                        <option value="head_of_eng">หัวหน้าหมวดอังกฤษ</option>
+                        <option
+                          value="head_of_computer">หัวหน้าหมวดคอมฯ</option>
+                        <option value="head_of_sci">หัวหน้าหมวดวิทยาฯ</option>
+                        <option
+                          value="head_of_social_studie">หัวหน้าหมวดสังคมฯ</option>
+                        <option value="head_of_thai">หัวหน้าหมวดไทย</option>
+                        <option value="hr_staff">เจ้าหน้าที่บุคคลากร</option>
+                        <option
+                          value="operation_staff">เจ้าหน้าที่บริหาร</option>
+                        <option
+                          value="quality_staff">เจ้าหน้าที่มาตรการ</option>
+                        <option
+                          value="resource_staff">เจ้าหน้าที่ทรัพยากร</option>
+                        <option
+                          value="student_affair_staff">เจ้าหน้าที่กิจการนักเรียน</option>
+                      </select>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-3">
+                      <select class="form-select" id="genderFilter">
+                        <option value>ทุกเพศ</option>
+                        <option value="ชาย">ชาย</option>
+                        <option value="หญิง">หญิง</option>
+                      </select>
+                    </div>
+                    <div class="col-12 col-sm-6 col-lg-2">
+                      <button type="button" class="btn btn-primary w-100"
+                        onclick="applyFilters()">
+                        <i class="mdi mdi-filter"></i>
+                        <span class="d-none d-sm-inline">กรอง</span>
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Search Results Info -->
+          <div class="search-results-info" id="searchInfo"
+            style="display: none;">
+            <div
+              class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2">
+              <span id="searchResultText" class="fs-6"></span>
+              <button type="button" class="btn btn-sm btn-outline-secondary"
+                onclick="resetFilters()">
+                <i class="mdi mdi-refresh"></i>
+                <span class="d-none d-sm-inline">รีเซ็ต</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Loading Indicator -->
+          <div class="loading text-center" id="loadingIndicator"
+            style="display: none;">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">กำลังโหลด...</span>
+            </div>
+            <p class="mt-2 fs-6">กำลังโหลดข้อมูลพนักงาน...</p>
+          </div>
+
+          <!-- No Results -->
+          <div class="no-results text-center" id="noResults"
+            style="display: none;">
+            <i class="mdi mdi-account-off"
+              style="font-size: 3rem; color: #ccc;"></i>
+            <h5 class="mt-3 fs-5">ไม่พบพนักงานที่ค้นหา</h5>
+            <p
+              class="text-muted fs-6">ลองเปลี่ยนคำค้นหาหรือตัวกรองแล้วลองใหม่</p>
+            <button type="button" class="btn btn-outline-primary"
+              onclick="resetFilters()">
+              <i class="mdi mdi-refresh"></i> รีเซ็ตการค้นหา
+            </button>
+          </div>
+
+          <!-- Employee List -->
+          <div class="row">
+            <div class="col-12">
+              <div class="candidate-list" id="employeeContainer">
+                <!-- Employee cards will be dynamically loaded here -->
+              </div>
+
+              <!-- Pagination -->
+              <nav class="mt-4" id="pagination" style="display: none;">
+                <ul class="pagination justify-content-center">
+                  <li class="page-item" id="prevPage">
+                    <a class="page-link" href="#" onclick="changePage(-1)">
+                      <i class="mdi mdi-chevron-left"></i>
+                      <span class="d-none d-sm-inline">ก่อนหน้า</span>
+                    </a>
+                  </li>
+                  <li class="page-item active">
+                    <a class="page-link" href="#" id="currentPageNum">1</a>
+                  </li>
+                  <li class="page-item" id="nextPage">
+                    <a class="page-link" href="#" onclick="changePage(1)">
+                      <span class="d-none d-sm-inline">ถัดไป</span>
+                      <i class="mdi mdi-chevron-right"></i>
+                    </a>
+                  </li>
+                </ul>
+                <div class="text-center mt-2">
+                  <small class="text-muted fs-7">แสดงผล <span
+                      id="itemsPerPage">8</span> รายการต่อหน้า</small>
+                </div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Employee Detail Modal -->
+    <div class="modal fade" id="employeeModal" tabindex="-1"
+      aria-labelledby="employeeModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title fs-5" id="employeeModalLabel">
+              <i class="mdi mdi-account-details"></i> รายละเอียดพนักงาน
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"
+              aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="employeeModalBody">
+            <!-- Employee details will be loaded here -->
+          </div>
+          <div class="modal-footer">
+            <!-- Edit Button (only for admin_hr) -->
+            <button type="button" class="btn btn-warning"
+              id="editEmployeeBtn"
+              onclick="editEmployeeFromModal()">
+              <i class="mdi mdi-pencil"></i>
+              <span class="d-none d-sm-inline">แก้ไข</span>
+            </button>
+            <!-- Delete Button (only for admin_hr) -->
+            <button type="button" class="btn btn-danger"
+              id="deleteEmployeeBtn"
+              onclick="deleteEmployeeFromModal()">
+              <i class="mdi mdi-delete"></i>
+              <span class="d-none d-sm-inline">ลบ</span>
+            </button>
+            <button type="button" class="btn btn-outline-secondary"
+              data-bs-dismiss="modal">
+              <i class="mdi mdi-close"></i>
+              <span class="d-none d-sm-inline">ปิด</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add/Edit Employee Modal -->
+    <div class="modal fade" id="employeeFormModal" tabindex="-1"
+      aria-labelledby="employeeFormModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title fs-5" id="employeeFormModalLabel">
+              <i class="mdi mdi-account-plus"></i> เพิ่มพนักงานใหม่
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"
+              aria-label="Close"></button>
+          </div>
+          <form id="employeeForm" onsubmit="submitEmployeeForm(event)">
+            <div class="modal-body">
+              <div class="row">
+                <!-- Basic Info -->
+                <div class="col-md-6">
+                  <h6
+                    class="text-primary border-bottom pb-2 mb-3">ข้อมูลพื้นฐาน</h6>
+
+                  <div class="mb-3">
+                    <label for="firstname" class="form-label">ชื่อ <span
+                        class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="firstname"
+                      name="firstname" required>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="lastname" class="form-label">นามสกุล <span
+                        class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="lastname"
+                      name="lastname" required>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="email" class="form-label">อีเมล <span
+                        class="text-danger">*</span></label>
+                    <input type="email" class="form-control" id="email"
+                      name="email" required>
+                  </div>
+
+                  <div class="mb-3" id="passwordField">
+                    <label for="password" class="form-label">รหัสผ่าน <span
+                        class="text-danger">*</span></label>
+                    <input type="password" class="form-control" id="password"
+                      name="password" minlength="6">
+                    <div class="form-text">ความยาวอย่างน้อย 6 ตัวอักษร</div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="role_code" class="form-label">ตำแหน่ง <span
+                        class="text-danger">*</span></label>
+                    <select class="form-select" id="role_code" name="role_code"
+                      required>
+                      <option value>เลือกตำแหน่ง</option>
+                      <!-- Options will be loaded dynamically -->
+                    </select>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="tel" class="form-label">เบอร์โทร</label>
+                    <input type="tel" class="form-control" id="tel" name="tel">
+                  </div>
+                </div>
+
+                <!-- Personal Info -->
+                <div class="col-md-6">
+                  <h6
+                    class="text-primary border-bottom pb-2 mb-3">ข้อมูลส่วนตัว</h6>
+
+                  <div class="mb-3">
+                    <label for="salary" class="form-label">เงินเดือน
+                      (บาท)</label>
+                    <input type="number" class="form-control" id="salary"
+                      name="salary" min="0" step="0.01">
+                  </div>
+
+                  <div class="row">
+                    <div class="col-6">
+                      <div class="mb-3">
+                        <label for="age" class="form-label">อายุ</label>
+                        <input type="number" class="form-control" id="age"
+                          name="age" min="18" max="100">
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="mb-3">
+                        <label for="gender" class="form-label">เพศ</label>
+                        <select class="form-select" id="gender" name="gender">
+                          <option value>เลือกเพศ</option>
+                          <option value="ชาย">ชาย</option>
+                          <option value="หญิง">หญิง</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="birthdate" class="form-label">วันเกิด</label>
+                    <input type="date" class="form-control" id="birthdate"
+                      name="birthdate">
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="nation" class="form-label">สัญชาติ</label>
+                    <input type="text" class="form-control" id="nation"
+                      name="nation" value="ไทย">
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="religion" class="form-label">ศาสนา</label>
+                    <input type="text" class="form-control" id="religion"
+                      name="religion">
+                  </div>
+                </div>
+
+                <!-- Address Info -->
+                <div class="col-12">
+                  <h6 class="text-primary border-bottom pb-2 mb-3">ที่อยู่</h6>
+
+                  <div class="mb-3">
+                    <label for="address" class="form-label">ที่อยู่</label>
+                    <textarea class="form-control" id="address" name="address"
+                      rows="2"></textarea>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="mb-3">
+                        <label for="district"
+                          class="form-label">อำเภอ/เขต</label>
+                        <input type="text" class="form-control" id="district"
+                          name="district">
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="mb-3">
+                        <label for="provience"
+                          class="form-label">จังหวัด</label>
+                        <input type="text" class="form-control" id="provience"
+                          name="provience">
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="mb-3">
+                        <label for="zipcode"
+                          class="form-label">รหัสไปรษณีย์</label>
+                        <input type="text" class="form-control" id="zipcode"
+                          name="zipcode" pattern="[0-9]{5}">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-secondary"
+                data-bs-dismiss="modal">
+                <i class="mdi mdi-close"></i> ยกเลิก
+              </button>
+              <button type="submit" class="btn btn-primary" id="submitBtn">
+                <i class="mdi mdi-content-save"></i> บันทึก
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+      <div id="successToast" class="toast" role="alert" aria-live="assertive"
+        aria-atomic="true">
+        <div class="toast-header">
+          <i class="mdi mdi-check-circle text-success me-2"></i>
+          <strong class="me-auto">สำเร็จ</strong>
+          <button type="button" class="btn-close" data-bs-dismiss="toast"
+            aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="successToastBody">
+          <!-- Success message -->
+        </div>
+      </div>
+
+      <div id="errorToast" class="toast" role="alert" aria-live="assertive"
+        aria-atomic="true">
+        <div class="toast-header">
+          <i class="mdi mdi-alert-circle text-danger me-2"></i>
+          <strong class="me-auto">ข้อผิดพลาด</strong>
+          <button type="button" class="btn-close" data-bs-dismiss="toast"
+            aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="errorToastBody">
+          <!-- Error message -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="JS/mobile-menu.js"></script>
+    <script src="JS/myemp.js"></script>
+
+  </body>
+</html>

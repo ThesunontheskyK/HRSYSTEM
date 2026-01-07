@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สถานะคำร้อง - HR System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.2.96/css/materialdesignicons.min.css">
+    <!-- Common CSS (สำหรับ Sidebar และ Mobile Menu) -->
+    <link rel="stylesheet" href="CSS/owner-common.css">
+    <link rel="stylesheet" href="CSS/owner-status.css">
+</head>
+<body>
+<!-- Mobile Menu Toggle (จะถูกสร้างโดย JavaScript) -->
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <div class="profile">
+    <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="Profile" class="profile-pic">
+    <div>
+      <h3 id="username">กำลังโหลด...</h3>
+      <h4 id="subjectname">ผู้บริหาร</h4>
+    </div>
+  </div>
+  <nav class="menu">
+    <a href="owner-dashboard.html">
+      <i class="mdi mdi-view-dashboard me-2"></i> หน้าหลัก
+    </a>
+    <a href="owner-myemp.html">
+      <i class="mdi mdi-account-group me-2"></i> จัดการพนักงาน
+    </a>
+    <a href="owner-status.html" class="active" aria-current="page">
+      <i class="mdi mdi-file-document me-2"></i> อนุมัติคำร้อง
+    </a>
+    <a href="owner-check.html">
+      <i class="mdi mdi-calendar-check me-2"></i> การเข้างาน
+    </a>
+    <a href="owner-salary.html">
+      <i class="mdi mdi-calculator me-2"></i> การเงิน
+    </a>
+    <a href="owner-academic-years.html">
+      <i class="mdi mdi-calendar-multiple me-2"></i> จัดการปีการศึกษา
+    </a>
+    <button onclick="logout()" type="button">
+      <i class="mdi mdi-logout me-2"></i> ออกจากระบบ
+    </button>
+  </nav>
+</div>
+
+<!-- Mobile Overlay (จะถูกสร้างโดย JavaScript) -->
+
+<!-- Main Content -->
+<div class="main-content">
+    <div class="header">
+        <h1>📋 สถานะคำร้องทั้งหมด</h1>
+        <p>ตรวจสอบและอนุมัติคำร้องของพนักงานทั้งหมดในระบบ</p>
+    </div>
+
+    <!-- Academic Year Banner -->
+    <div class="academic-year-banner" id="academicYearBanner">
+        <div class="banner-content">
+            <i class="mdi mdi-calendar-clock"></i>
+            <span>ปีการศึกษาปัจจุบัน: <strong id="currentAcademicYear">กำลังโหลด...</strong></span>
+            <a href="owner-academic-years.html" class="banner-link">
+                <i class="mdi mdi-cog"></i> เปลี่ยนปีการศึกษา
+            </a>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="filter-section">
+        <div class="filter-grid">
+            <div class="filter-group">
+                <label>ค้นหาพนักงาน</label>
+                <input type="text" id="employeeSearch" placeholder="ชื่อ หรือ อีเมล">
+            </div>
+            <div class="filter-group">
+                <label>ประเภทคำร้อง</label>
+                <select id="leaveTypeFilter">
+                    <option value="">ทุกประเภท</option>
+                    <option value="sick_leave">ลาป่วย</option>
+                    <option value="personal_leave">ลากิจ</option>
+                    <option value="annual_leave">ลาพักผ่อน</option>
+                    <option value="maternity_leave">ลาคลอด</option>
+                    <option value="other">อื่นๆ</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>วันที่เริ่มต้น</label>
+                <input type="date" id="startDateFilter">
+            </div>
+            <div class="filter-group">
+                <label>วันที่สิ้นสุด</label>
+                <input type="date" id="endDateFilter">
+            </div>
+        </div>
+        <div class="filter-actions">
+            <button class="btn btn-primary" onclick="applyFilters()">
+                <i class="mdi mdi-magnify"></i> <span class="btn-text">ค้นหา</span>
+            </button>
+            <button class="btn btn-secondary" onclick="resetFilters()">
+                <i class="mdi mdi-refresh"></i> <span class="btn-text">รีเซ็ต</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Status Tabs -->
+    <div class="status-tabs">
+        <div class="tab active" data-status="all" onclick="filterByStatus('all')">
+            <span class="tab-count" id="allCount">0</span>
+            <span class="tab-label">ทั้งหมด</span>
+        </div>
+        <div class="tab" data-status="pending" onclick="filterByStatus('pending')">
+            <span class="tab-count" id="pendingCount">0</span>
+            <span class="tab-label">รอดำเนินการ</span>
+        </div>
+        <div class="tab" data-status="approved" onclick="filterByStatus('approved')">
+            <span class="tab-count" id="approvedCount">0</span>
+            <span class="tab-label">อนุมัติแล้ว</span>
+        </div>
+        <div class="tab" data-status="rejected" onclick="filterByStatus('rejected')">
+            <span class="tab-count" id="rejectedCount">0</span>
+            <span class="tab-label">ปฏิเสธแล้ว</span>
+        </div>
+    </div>
+
+    <!-- Requests Container -->
+    <div class="requests-container">
+        <div class="table-header">
+            <span id="currentStatusTitle">คำร้องทั้งหมด</span>
+            <div class="table-actions">
+                <button class="btn btn-primary" onclick="refreshData()">
+                    <i class="mdi mdi-refresh"></i> <span class="btn-text">รีเฟรช</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div class="loading" id="loadingState" style="display: none;">
+            <div class="loading-spinner"></div>
+            <span>กำลังโหลดข้อมูล...</span>
+        </div>
+
+        <!-- Desktop Table -->
+        <div class="table-container desktop-only">
+            <table class="requests-table" id="requestsTable" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>รหัสคำร้อง</th>
+                        <th>พนักงาน</th>
+                        <th>ประเภทคำร้อง</th>
+                        <th>วันที่ลา</th>
+                        <th>วันที่ส่งคำร้อง</th>
+                        <th>สถานะ</th>
+                        <th>ผู้อนุมัติ</th>
+                        <th>การดำเนินการ</th>
+                    </tr>
+                </thead>
+                <tbody id="requestsTableBody">
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Mobile Cards -->
+        <div class="mobile-cards mobile-only" id="mobileCards" style="display: none;">
+            <!-- Will be populated by JavaScript -->
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <div class="empty-icon">📋</div>
+            <h3>ไม่พบคำร้อง</h3>
+            <p>ไม่มีคำร้องในสถานะนี้ หรือไม่มีคำร้องที่ตรงกับเงื่อนไขการค้นหา</p>
+        </div>
+    </div>
+</div>
+
+<!-- Request Detail Modal -->
+<div id="requestModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle">รายละเอียดคำร้อง</h2>
+            <span class="modal-close" onclick="closeRequestModal()">&times;</span>
+        </div>
+        <div class="modal-body" id="modalBody">
+            <!-- Content will be populated by JavaScript -->
+        </div>
+        <div class="modal-footer" id="modalFooter">
+            <!-- Action buttons will be populated by JavaScript -->
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="JS/common.js"></script>
+<script src="JS/mobile-menu.js"></script>
+<script src="JS/owner-status.js"></script>
+</body>
+</html>

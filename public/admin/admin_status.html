@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="th">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>สถานะคำร้อง - HR System</title>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="CSS/admin_status.css">
+    </head>
+    <body>
+        <!-- Mobile Menu Toggle (จะถูกสร้างโดย JavaScript) -->
+
+        <!-- Mobile Overlay (จะถูกสร้างโดย JavaScript) -->
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="profile">
+                <img id="sidebarProfilePic" src="/uploads/default.png"
+                    alt="Profile" class="profile-pic">
+                <div>
+                    <h3 id="username">ชื่อผู้ใช้</h3>
+                    <h4 id="subjectname">Admin</h4>
+                </div>
+            </div>
+            <nav class="menu">
+                <a href="admin-dashboard.html">📊 หน้าหลัก</a>
+                <a href="admin_sendrequest.html">📝 ยื่นคำร้อง</a>
+                <a href="admin-requests.html">✅ อนุมัติคำร้อง</a>
+                <a href="admin_status.html">📋 ติดตามคำร้อง</a>
+                <a href="myemp.html">👥 จัดการบุคลากร</a>
+                <a href="admin-check.html">📊 การเข้างาน</a>
+                <a href="cal.html">💰 คำนวนเงินเดือน</a>
+                <a href="profile.html">👤 แก้ไขโปรไฟล์</a>
+                <button onclick="logout()" type="button">🚪 ออกจากระบบ</button>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1>📋 สถานะคำร้องของฉัน</h1>
+                <p>ตรวจสอบสถานะและรายละเอียดการอนุมัติคำร้องทั้งหมด</p>
+            </div>
+
+            <div class="status-tabs">
+                <div class="tab active" data-status="all"
+                    onclick="filterByStatus('all')">
+                    <span class="tab-count" id="allCount">0</span>
+                    <span class="tab-label">ทั้งหมด</span>
+                </div>
+                <div class="tab" data-status="pending"
+                    onclick="filterByStatus('pending')">
+                    <span class="tab-count" id="pendingCount">0</span>
+                    <span class="tab-label">รอดำเนินการ</span>
+                </div>
+                <div class="tab" data-status="approved"
+                    onclick="filterByStatus('approved')">
+                    <span class="tab-count" id="approvedCount">0</span>
+                    <span class="tab-label">อนุมัติ</span>
+                </div>
+                <div class="tab" data-status="rejected"
+                    onclick="filterByStatus('rejected')">
+                    <span class="tab-count" id="rejectedCount">0</span>
+                    <span class="tab-label">ปฏิเสธ</span>
+                </div>
+            </div>
+
+            <div class="requests-container">
+                <div class="table-header">
+                    <span id="currentStatusTitle">คำร้องทั้งหมด</span>
+                </div>
+
+                <div class="loading" id="loadingState" style="display: none;">
+                    <div class="loading-spinner"></div>
+                    <span>กำลังโหลดข้อมูล...</span>
+                </div>
+
+                <!-- Desktop Table View -->
+                <table class="requests-table desktop-table" id="requestsTable"
+                    style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>รหัสคำร้อง</th>
+                            <th>หัวข้อ</th>
+                            <th>วันที่ส่ง</th>
+                            <th>สถานะ</th>
+                            <th>ผู้อนุมัติ</th>
+                            <th>วันที่เริ่มส่ง</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requestsTableBody">
+                    </tbody>
+                </table>
+
+                <!-- Mobile Card View -->
+                <div class="mobile-cards" id="mobileCards"
+                    style="display: none;">
+                    <!-- Cards จะถูกสร้างโดย JavaScript -->
+                </div>
+
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <div class="empty-icon">📋</div>
+                    <h3>ไม่พบคำร้อง</h3>
+                    <p>ไม่มีคำร้องในสถานะนี้</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scripts -->
+        <script src="JS/mobile-menu.js"></script>
+        <script src="JS/admin_status.js"></script>
+        <script src="JS/common.js"></script>
+    </body>
+</html>

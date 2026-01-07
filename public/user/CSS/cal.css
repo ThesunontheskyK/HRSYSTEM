@@ -1,0 +1,704 @@
+/* ========== BASE STYLES ========== */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    font-family: 'Prompt', sans-serif;
+    background-color: #f4f6f9;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+/* ========== SIDEBAR ========== */
+.sidebar {
+    width: 220px;
+    background-color: #2c3e50;
+    color: white;
+    min-height: 100vh;
+    padding: 20px 15px;
+    box-sizing: border-box;
+    position: relative;
+    transition: transform 0.3s ease;
+}
+
+.profile {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.profile-pic {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+    border: 2px solid white;
+}
+
+.profile h3, #username {
+    font-size: 16px;
+    font-weight: 500;
+    margin: 5px 0;
+    word-wrap: break-word;
+}
+
+.profile h4, #subjectname {
+    font-size: 14px;
+    font-weight: 300;
+    margin: 0;
+    opacity: 0.8;
+    word-wrap: break-word;
+}
+
+.menu a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    transition: all 0.3s;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.menu a:hover {
+    background-color: #34495e;
+    transform: translateX(5px);
+}
+
+.menu a.active, .menu a[aria-current="page"] {
+    background-color: #3788d8;
+}
+
+.menu button {
+    display: block;
+    margin: 20px auto 0;
+    padding: 10px 20px;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s;
+    width: 100%;
+    font-family: 'Prompt', sans-serif;
+}
+
+.menu button:hover {
+    background-color: #c0392b;
+    transform: translateY(-2px);
+}
+
+/* ========== MAIN CONTENT ========== */
+.main-content {
+    flex: 1;
+    padding: 20px;
+    min-width: 0;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 10px;
+    color: #2c3e50;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-weight: 600;
+}
+
+#userInfo {
+    text-align: center;
+    font-size: clamp(14px, 2.5vw, 16px);
+    margin-bottom: 30px;
+    color: #666;
+    padding: 0 10px;
+    word-wrap: break-word;
+}
+
+/* Cal Container */
+.cal-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Content Grid */
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+}
+
+.left-column, .right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Card Styles */
+.card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+}
+
+.card-title {
+    color: #2c3e50;
+    font-size: clamp(16px, 3vw, 18px);
+    font-weight: 500;
+    margin: 0 0 20px 0;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 10px;
+}
+
+.card-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.card-header-flex .card-title {
+    margin: 0;
+    border: none;
+    padding: 0;
+}
+
+.last-updated {
+    font-size: clamp(10px, 2vw, 12px);
+    color: #666;
+}
+
+/* Info Section */
+.info-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.info-item label {
+    font-size: clamp(12px, 2.5vw, 14px);
+    color: #666;
+    font-weight: 500;
+}
+
+.info-value {
+    padding: 10px 12px;
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    font-size: clamp(12px, 2.5vw, 14px);
+    color: #2c3e50;
+    word-wrap: break-word;
+}
+
+/* Stats Section */
+.stats-section {
+    margin-bottom: 25px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.stat-number {
+    font-size: clamp(20px, 4vw, 24px);
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: clamp(10px, 2vw, 12px);
+    color: #666;
+    text-align: center;
+}
+
+.stat-red .stat-number {
+    color: #e74c3c;
+}
+
+.stat-yellow .stat-number {
+    color: #f39c12;
+}
+
+.stat-orange .stat-number {
+    color: #e67e22;
+}
+
+/* Table Styles */
+.table-container {
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.attendance-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    min-width: 600px;
+}
+
+.attendance-table th {
+    background-color: #f8f9fa;
+    padding: 12px;
+    text-align: left;
+    font-weight: 500;
+    color: #2c3e50;
+    border-bottom: 2px solid #e9ecef;
+    font-size: clamp(12px, 2.5vw, 14px);
+}
+
+.attendance-table td {
+    padding: 12px;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: clamp(12px, 2.5vw, 14px);
+}
+
+.attendance-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.no-data {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+}
+
+/* Calculation Section */
+.calculation-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin-bottom: 25px;
+}
+
+.calculation-section {
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+}
+
+.section-title {
+    font-size: clamp(14px, 3vw, 16px);
+    font-weight: 600;
+    margin: 0 0 15px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.section-title.income {
+    color: #27ae60;
+}
+
+.section-title.deduction {
+    color: #e74c3c;
+}
+
+.calculation-items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.calculation-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    font-size: clamp(12px, 2.5vw, 14px);
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.calculation-item.total {
+    border-top: 2px solid #f0f0f0;
+    padding-top: 15px;
+    margin-top: 10px;
+    font-weight: 600;
+}
+
+.amount {
+    font-weight: 500;
+    text-align: right;
+}
+
+.total-income {
+    color: #27ae60;
+}
+
+.total-deduction {
+    color: #e74c3c;
+}
+
+/* Net Salary */
+.net-salary-section {
+    padding: 20px;
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    border-radius: 10px;
+    color: white;
+}
+
+.net-salary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.net-salary-label {
+    font-size: clamp(16px, 3.5vw, 18px);
+    font-weight: 600;
+}
+
+.net-salary-amount {
+    font-size: clamp(20px, 4.5vw, 24px);
+    font-weight: 700;
+    color: #f1c40f;
+}
+
+/* ========== MOBILE HAMBURGER MENU ========== */
+.mobile-menu-toggle {
+    display: none;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1001;
+    background-color: #2c3e50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    width: 44px;
+    height: 44px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.mobile-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+/* ========== RESPONSIVE BREAKPOINTS ========== */
+
+/* Large Desktop */
+@media (min-width: 1200px) {
+    .main-content {
+        padding: 30px;
+    }
+    
+    .cal-container {
+        max-width: 1000px;
+    }
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .calculation-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .card-header-flex {
+        justify-content: center;
+        text-align: center;
+    }
+    
+    .last-updated {
+        order: -1;
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 280px;
+        height: 100vh;
+        z-index: 1000;
+        transform: translateX(-100%);
+        overflow-y: auto;
+    }
+    
+    .sidebar.active {
+        transform: translateX(0);
+    }
+    
+    .mobile-menu-toggle {
+        display: block;
+    }
+    
+    .mobile-overlay.active {
+        display: block;
+    }
+    
+    .main-content {
+        padding: 60px 15px 20px 15px;
+        width: 100%;
+    }
+    
+    .cal-container {
+        max-width: 100%;
+    }
+    
+    .content-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .card {
+        padding: 20px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        padding: 15px;
+    }
+    
+    .attendance-table {
+        min-width: 500px;
+    }
+    
+    .calculation-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .calculation-section {
+        padding: 15px;
+    }
+    
+    .net-salary-section {
+        padding: 15px;
+    }
+    
+    .net-salary-item {
+        justify-content: center;
+        text-align: center;
+    }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .main-content {
+        padding: 60px 10px 15px 10px;
+    }
+    
+    h1 {
+        font-size: 1.3rem;
+        margin-bottom: 8px;
+    }
+    
+    #userInfo {
+        font-size: 13px;
+        margin-bottom: 20px;
+        line-height: 1.4;
+    }
+    
+    .card {
+        padding: 15px;
+        margin: 0 -5px;
+        border-radius: 8px;
+    }
+    
+    .profile-pic {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .profile h3, #username {
+        font-size: 14px;
+    }
+    
+    .profile h4, #subjectname {
+        font-size: 12px;
+    }
+    
+    .menu a {
+        padding: 12px 15px;
+        font-size: 15px;
+    }
+    
+    .menu button {
+        padding: 12px 20px;
+        font-size: 15px;
+        min-height: 48px;
+    }
+    
+    .stats-grid {
+        padding: 10px;
+    }
+    
+    .stat-item {
+        padding: 10px;
+    }
+    
+    .attendance-table {
+        min-width: 400px;
+    }
+    
+    .attendance-table th,
+    .attendance-table td {
+        padding: 8px;
+        font-size: 12px;
+    }
+    
+    .calculation-item {
+        font-size: 12px;
+    }
+    
+    .calculation-item span {
+        word-break: break-word;
+    }
+    
+    .net-salary-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+    
+    .sidebar {
+        width: 260px;
+    }
+}
+
+/* Extra Small Mobile */
+@media (max-width: 360px) {
+    .main-content {
+        padding: 55px 8px 12px 8px;
+    }
+    
+    .card {
+        margin: 0 -3px;
+        padding: 12px;
+    }
+    
+    h1 {
+        font-size: 1.1rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        padding: 8px;
+    }
+    
+    .stat-item {
+        padding: 8px;
+    }
+    
+    .attendance-table {
+        min-width: 320px;
+    }
+    
+    .calculation-section {
+        padding: 12px;
+    }
+    
+    .net-salary-section {
+        padding: 12px;
+    }
+}
+
+/* ========== LANDSCAPE MOBILE ========== */
+@media (max-width: 768px) and (orientation: landscape) {
+    .sidebar {
+        width: 260px;
+    }
+    
+    .main-content {
+        padding: 50px 15px 15px 15px;
+    }
+    
+    .content-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* ========== ACCESSIBILITY ========== */
+@media (prefers-reduced-motion: reduce) {
+    .sidebar,
+    .mobile-menu-toggle,
+    .menu a,
+    .menu button {
+        transition: none;
+    }
+}
+
+/* ========== PRINT STYLES ========== */
+@media print {
+    .sidebar,
+    .mobile-menu-toggle,
+    .mobile-overlay {
+        display: none;
+    }
+    
+    .main-content {
+        padding: 0;
+        width: 100%;
+    }
+    
+    .card {
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+    
+    .net-salary-section {
+        background: #f0f0f0 !important;
+        color: #000 !important;
+    }
+}

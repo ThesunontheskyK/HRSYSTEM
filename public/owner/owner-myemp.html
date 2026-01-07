@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <title>รายชื่อพนักงาน - ระบบจัดการ HR</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.2.96/css/materialdesignicons.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Common CSS (สำหรับ Sidebar และ Mobile Menu) -->
+  <link rel="stylesheet" href="CSS/owner-common.css">
+  <link rel="stylesheet" href="CSS/owner-myemp.css">
+</head>
+<body>
+  <!-- Mobile Menu Toggle (จะถูกสร้างโดย JavaScript) -->
+  
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="profile">
+      <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="Profile" class="profile-pic">
+      <div>
+        <h3 id="username">กำลังโหลด...</h3>
+        <h4 id="subjectname">ผู้บริหาร</h4>
+      </div>
+    </div>
+    <nav class="menu">
+      <a href="owner-dashboard.html">
+        <i class="mdi mdi-view-dashboard me-2"></i> หน้าหลัก
+      </a>
+      <a href="owner-myemp.html" class="active" aria-current="page">
+        <i class="mdi mdi-account-group me-2"></i> จัดการพนักงาน
+      </a>
+      <a href="owner-status.html">
+        <i class="mdi mdi-file-document me-2"></i> อนุมัติคำร้อง
+      </a>
+      <a href="owner-check.html">
+        <i class="mdi mdi-calendar-check me-2"></i> การเข้างาน
+      </a>
+      <a href="owner-salary.html">
+        <i class="mdi mdi-calculator me-2"></i> การเงิน
+      </a>
+      <a href="owner-academic-years.html">
+        <i class="mdi mdi-calendar-multiple me-2"></i> จัดการปีการศึกษา
+      </a>
+      <button onclick="logout()" type="button">
+        <i class="mdi mdi-logout me-2"></i> ออกจากระบบ
+      </button>
+    </nav>
+  </div>
+
+  <!-- Mobile Overlay (จะถูกสร้างโดย JavaScript) -->
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Header -->
+    <div class="header-section">
+      <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+        <div>
+          <h2 class="mb-1">
+            <i class="mdi mdi-account-group text-primary me-2"></i>
+            รายชื่อพนักงาน
+          </h2>
+          <p class="text-muted mb-0">จัดการและดูข้อมูลพนักงานทั้งหมดในระบบ</p>
+        </div>
+        <div class="header-actions">
+          <!-- เพิ่มปุ่มเพิ่มพนักงาน -->
+          <button class="btn btn-success btn-responsive" onclick="showAddEmployeeModal()">
+            <i class="mdi mdi-account-plus"></i> 
+            <span class="btn-text">เพิ่มพนักงาน</span>
+          </button>
+          <button class="btn btn-outline-primary btn-responsive" onclick="resetFilters()">
+            <i class="mdi mdi-refresh"></i> 
+            <span class="btn-text">รีเฟรช</span>
+          </button>
+          <button class="btn btn-primary btn-responsive" onclick="window.location.reload()">
+            <i class="mdi mdi-reload"></i> 
+            <span class="btn-text">โหลดใหม่</span>
+          </button>
+        </div>
+      </div>
+    </div>
+        
+    <!-- Search and Filter Section -->
+    <div class="search-filter-card">
+      <form onsubmit="return false;">
+        <div class="filter-grid">
+          <div class="filter-group">
+            <label class="form-label fw-medium">
+              <i class="mdi mdi-magnify text-primary me-1"></i>
+              ค้นหาพนักงาน
+            </label>
+            <div class="input-group">
+              <input 
+                type="search" 
+                class="form-control" 
+                placeholder="ชื่อ, นามสกุล" 
+                id="searchInput"
+              />
+              <button type="button" class="btn btn-outline-secondary" onclick="clearSearch()" title="ล้างการค้นหา">
+                <i class="mdi mdi-close"></i>
+              </button>
+            </div>
+          </div>
+          <div class="filter-group">
+            <label class="form-label fw-medium">
+              <i class="mdi mdi-account-group text-primary me-1"></i>
+              ระดับสิทธิ์
+            </label>
+            <select class="form-select" id="roleGroupFilter">
+              <option value="">ทุกระดับ</option>
+              <option value="admin">Admin</option>
+              <option value="user">User</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label class="form-label fw-medium">
+              <i class="mdi mdi-gender-male-female text-primary me-1"></i>
+              เพศ
+            </label>
+            <select class="form-select" id="genderFilter">
+              <option value="">ทุกเพศ</option>
+              <option value="ชาย">ชาย</option>
+              <option value="หญิง">หญิง</option>
+            </select>
+          </div>
+          <div class="filter-group filter-actions">
+            <label class="form-label text-white" aria-hidden="true">.</label>
+            <div class="action-buttons">
+              <button type="button" class="btn btn-primary" onclick="applyFilters()">
+                <i class="mdi mdi-magnify"></i> 
+                <span class="btn-text">ค้นหา</span>
+              </button>
+              <button type="button" class="btn btn-outline-secondary" onclick="resetFilters()" title="รีเซ็ตตัวกรอง">
+                <i class="mdi mdi-refresh"></i>
+                <span class="btn-text d-lg-none">รีเซ็ต</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Search Results Info -->
+    <div class="search-results-info" id="searchInfo" style="display: none;">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <span id="searchResultText">
+          <i class="mdi mdi-information-outline me-1"></i>
+          ผลการค้นหา
+        </span>
+        <button type="button" class="btn btn-sm btn-outline-primary" onclick="resetFilters()">
+          <i class="mdi mdi-refresh"></i> รีเซ็ต
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading Indicator -->
+    <div class="loading text-center" id="loadingIndicator">
+      <div class="spinner-border text-primary loading-spinner" role="status">
+        <span class="visually-hidden">กำลังโหลด...</span>
+      </div>
+      <p class="mt-3 text-muted">กำลังโหลดข้อมูลพนักงาน...</p>
+    </div>
+
+    <!-- No Results -->
+    <div class="no-results text-center" id="noResults" style="display: none;">
+      <i class="mdi mdi-account-off"></i>
+      <h5 class="mt-3">ไม่พบพนักงานที่ค้นหา</h5>
+      <p class="text-muted">ลองเปลี่ยนคำค้นหาหรือตัวกรองแล้วลองใหม่</p>
+      <button type="button" class="btn btn-outline-primary" onclick="resetFilters()">
+        <i class="mdi mdi-refresh"></i> รีเซ็ตการค้นหา
+      </button>
+    </div>
+
+    <!-- Employee List -->
+    <div id="employeeContainer" class="employee-container">
+      <!-- Employee cards will be dynamically loaded here -->
+    </div>
+
+    <!-- Pagination -->
+    <nav id="pagination" class="pagination-nav" style="display: none;" aria-label="การแบ่งหน้า">
+      <ul class="pagination justify-content-center">
+        <li class="page-item" id="prevPage">
+          <a class="page-link" href="#" onclick="changePage(-1)" title="หน้าก่อนหน้า" aria-label="หน้าก่อนหน้า">
+            <i class="mdi mdi-chevron-left"></i>
+          </a>
+        </li>
+        <li class="page-item active">
+          <span class="page-link" id="currentPageNum" aria-label="หน้าปัจจุบัน">1</span>
+        </li>
+        <li class="page-item" id="nextPage">
+          <a class="page-link" href="#" onclick="changePage(1)" title="หน้าถัดไป" aria-label="หน้าถัดไป">
+            <i class="mdi mdi-chevron-right"></i>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- Employee Detail Modal -->
+  <div class="modal fade" id="employeeModal" tabindex="-1" aria-labelledby="employeeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="employeeModalLabel">
+            <i class="mdi mdi-account-circle me-2"></i>
+            รายละเอียดพนักงาน
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="ปิด"></button>
+        </div>
+        <div class="modal-body" id="employeeModalBody">
+          <div class="text-center">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">กำลังโหลด...</span>
+            </div>
+            <p class="mt-2 text-muted">กำลังโหลดข้อมูล...</p>
+          </div>
+        </div>
+        <div class="modal-footer modal-footer-responsive">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <i class="mdi mdi-close"></i> 
+            <span class="btn-text">ปิด</span>
+          </button>
+          <button type="button" class="btn btn-success" id="saveBtn" onclick="saveEmployee()" style="display: none;">
+            <i class="mdi mdi-content-save"></i> 
+            <span class="btn-text">บันทึก</span>
+          </button>
+          <button type="button" class="btn btn-outline-secondary" id="cancelEditBtn" onclick="cancelEdit()" style="display: none;">
+            <i class="mdi mdi-cancel"></i> 
+            <span class="btn-text">ยกเลิก</span>
+          </button>
+          <button type="button" class="btn btn-warning" id="editBtn" onclick="editEmployee()">
+            <i class="mdi mdi-pencil"></i> 
+            <span class="btn-text">แก้ไข</span>
+          </button>
+          <button type="button" class="btn btn-danger" id="deleteBtn" onclick="deleteEmployee()">
+            <i class="mdi mdi-delete"></i> 
+            <span class="btn-text">ลบ</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="JS/common.js"></script>
+  <script src="JS/mobile-menu.js"></script>
+  <script src="JS/1owner-myemp.js"></script>
+</body>
+</html>

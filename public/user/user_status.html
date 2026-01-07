@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สถานะคำร้อง - HR System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="CSS/user_status.css">
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="profile">
+            <img id="sidebarProfilePic" src="/uploads/default.png" alt="Profile" class="profile-pic">
+            <div>
+                <h3 id="username">กำลังโหลด...</h3>
+                <h4 id="subjectname">กำลังโหลด...</h4>
+            </div>
+        </div>
+        <nav class="menu">
+            <a href="dashboard.html">📊 หน้าหลัก</a>
+            <a href="user_request.html">📝 ยื่นคำร้อง</a>
+            <a href="cal.html">💰 คำนวนเงินเดือน</a>
+            <a href="headsubrequests.html" style="display: none;">✅ อนุมัติคำร้อง</a>
+            <a href="user_status.html">📋 ติดตามคำร้อง</a>
+            <a href="profile.html">👤 แก้ไขโปรไฟล์</a>
+            <button onclick="logout()" type="button">🚪 ออกจากระบบ</button>
+        </nav>
+    </div>
+
+
+    <div class="main-content">
+        <div class="academic-year-banner" id="academicYearBanner">
+            <div class="banner-content">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                <span>ปีการศึกษาปัจจุบัน: <strong id="currentAcademicYear">กำลังโหลด...</strong></span>
+            </div>
+        </div>
+
+        <div class="header">
+            <h1>📋 สถานะคำร้องของฉัน</h1>
+            <p>ตรวจสอบสถานะและรายละเอียดการอนุมัติคำร้องทั้งหมด</p>
+        </div>
+        
+        <div class="status-tabs">
+            <div class="tab active" data-status="all" onclick="filterByStatus('all')">
+                <span class="tab-count" id="allCount">0</span>
+                <span class="tab-label">ทั้งหมด</span>
+            </div>
+            <div class="tab" data-status="pending" onclick="filterByStatus('pending')">
+                <span class="tab-count" id="pendingCount">0</span>
+                <span class="tab-label">รอดำเนินการ</span>
+            </div>
+            <div class="tab" data-status="approved" onclick="filterByStatus('approved')">
+                <span class="tab-count" id="approvedCount">0</span>
+                <span class="tab-label">อนุมัติ</span>
+            </div>
+            <div class="tab" data-status="rejected" onclick="filterByStatus('rejected')">
+                <span class="tab-count" id="rejectedCount">0</span>
+                <span class="tab-label">ปฏิเสธ</span>
+            </div>
+        </div>
+
+        <div class="requests-container">
+            <div class="table-header">
+                <span id="currentStatusTitle">คำร้องทั้งหมด</span>
+            </div>
+
+            <div class="loading" id="loadingState" style="display: none;">
+                <div class="loading-spinner"></div>
+                <span>กำลังโหลดข้อมูล...</span>
+            </div>
+
+            <div class="table-wrapper">
+                <table class="requests-table" id="requestsTable" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>รหัสคำร้อง</th>
+                            <th>หัวข้อ</th>
+                            <th>วันที่ส่ง</th>
+                            <th>สถานะ</th>
+                            <th class="hide-mobile">ผู้อนุมัติ</th>
+                            <th class="hide-mobile">วันที่ส่งคำร้อง</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requestsTableBody">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div class="empty-icon">📋</div>
+                <h3>ไม่พบคำร้อง</h3>
+                <p>ไม่มีคำร้องในสถานะนี้</p>
+            </div>
+        </div>
+    </div>
+    
+
+    <script src="JS/mobile-menu.js"></script>
+    <script src="JS/common.js"></script>
+    <script src="JS/user_status.js"></script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="th">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>คำร้องขอลา - HR System</title>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap"
+            rel="stylesheet">
+        <link href="CSS/admin_sendrequest.css" rel="stylesheet">
+    </head>
+    <body>
+        <!-- Mobile Menu Toggle (จะถูกสร้างโดย JavaScript) -->
+
+        <!-- Mobile Overlay (จะถูกสร้างโดย JavaScript) -->
+
+        <div class="sidebar">
+            <div class="profile">
+                <img id="sidebarProfilePic" src="/uploads/default.png"
+                    alt="Profile" class="profile-pic">
+                <div>
+                    <h3 id="username">ชื่อผู้ใช้</h3>
+                    <h4 id="subjectname">Admin</h4>
+                </div>
+            </div>
+            <nav class="menu">
+                <a href="admin-dashboard.html">📊 หน้าหลัก</a>
+                <a href="admin_sendrequest.html">📝 ยื่นคำร้อง</a>
+                <a href="admin-requests.html">✅ อนุมัติคำร้อง</a>
+                <a href="admin_status.html">📋 ติดตามคำร้อง</a>
+                <a href="myemp.html">👥 จัดการบุคลากร</a>
+                <a href="admin-check.html">📊 การเข้างาน</a>
+                <a href="cal.html">💰 คำนวนเงินเดือน</a>
+                <a href="profile.html">👤 แก้ไขโปรไฟล์</a>
+                <button onclick="logout()" type="button">🚪 ออกจากระบบ</button>
+            </nav>
+        </div>
+
+        <div class="main-content">
+            <div class="header-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+            </div>
+
+            <h1>คำร้องขอลา</h1>
+            <p class="subtitle">กรุณากรอกรายละเอียดการลาของท่าน</p>
+
+            <!-- User Information Section -->
+            <div class="user-info">
+                <div
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2>ข้อมูลผู้ขอลา</h2>
+                    <span class="status-badge">ล็อกอินแล้ว</span>
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">ชื่อ-นามสกุล</div>
+                        <div class="info-value" id="rename">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">รหัสพนักงาน</div>
+                        <div class="info-value" id="reid">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">ตำแหน่ง</div>
+                        <div class="info-value" id="repo">-</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">จำนวนครั้งที่ลา</div>
+                        <div class="info-value" id="recount">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Leave Request Form -->
+            <div class="leave-form">
+                <form id="leaveRequestForm">
+                    <div class="form-group">
+                        <label for="leaveType">ประเภทการลา <span
+                                class="required">*</span></label>
+                        <select id="leaveType" name="leaveType"
+                            class="form-control" required>
+                            <option value disabled selected>-- เลือกประเภทการลา
+                                --</option>
+                            <option value="sick">ลาป่วย</option>
+                            <option value="personal">ลากิจ</option>
+                            <option value="maternity">ลาคลอดบุตร</option>
+                            <option value="training">ลาฝึกอบรม/สัมมนา</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="startDate">วันที่เริ่มลา <span
+                                    class="required">*</span></label>
+                            <input type="date" id="startDate" name="startDate"
+                                class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="endDate">วันที่สิ้นสุด <span
+                                    class="required">*</span></label>
+                            <input type="date" id="endDate" name="endDate"
+                                class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reason">เหตุผลการลา <span
+                                class="required">*</span></label>
+                        <textarea id="reason" name="reason" rows="4"
+                            class="form-control" required></textarea>
+                    </div>
+
+                    <div class="checkbox-container">
+                        <input id="agreement" type="checkbox" required>
+                        <label
+                            for="agreement">ข้าพเจ้าขอรับรองว่าข้อมูลที่ให้ไว้เป็นความจริงทุกประการ</label>
+                    </div>
+
+                    <button type="submit"
+                        class="btn-submit">ส่งคำร้องขอลา</button>
+                </form>
+            </div>
+        </div>
+
+        <script src="JS/mobile-menu.js"></script>
+        <script src="JS/common.js"></script>
+        <script src="JS/admin_sendrequest.js"></script>
+    </body>
+</html>

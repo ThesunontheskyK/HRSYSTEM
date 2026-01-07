@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>จัดการปีการศึกษา - Owner</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.2.96/css/materialdesignicons.min.css">
+    <!-- Common CSS (สำหรับ Sidebar และ Mobile Menu) -->
+    <link rel="stylesheet" href="CSS/owner-common.css">
+    <link rel="stylesheet" href="CSS/owner-academic-years.css">
+</head>
+<body>
+    <!-- Mobile Menu Toggle (จะถูกสร้างโดย JavaScript) -->
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="profile">
+            <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="Profile" class="profile-pic">
+            <div>
+                <h3 id="username">กำลังโหลด...</h3>
+                <h4 id="subjectname">ผู้บริหาร</h4>
+            </div>
+        </div>
+        <nav class="menu">
+            <a href="owner-dashboard.html">
+                <i class="mdi mdi-view-dashboard me-2"></i> หน้าหลัก
+            </a>
+            <a href="owner-myemp.html">
+                <i class="mdi mdi-account-group me-2"></i> จัดการพนักงาน
+            </a>
+            <a href="owner-status.html">
+                <i class="mdi mdi-file-document me-2"></i> อนุมัติคำร้อง
+            </a>
+            <a href="owner-check.html">
+                <i class="mdi mdi-calendar-check me-2"></i> การเข้างาน
+            </a>
+            <a href="owner-salary.html">
+                <i class="mdi mdi-calculator me-2"></i> การเงิน
+            </a>
+            <a href="owner-academic-years.html" class="active" aria-current="page">
+                <i class="mdi mdi-calendar-multiple me-2"></i> จัดการปีการศึกษา
+            </a>
+            <button onclick="logout()" type="button">
+                <i class="mdi mdi-logout me-2"></i> ออกจากระบบ
+            </button>
+        </nav>
+    </div>
+
+    <!-- Mobile Overlay (จะถูกสร้างโดย JavaScript) -->
+
+    <!-- Main Content -->
+    <div class="main-content">
+            <div class="content-wrapper">
+                <div class="page-header">
+                    <div class="header-content">
+                        <div class="header-icon">
+                            <i class="mdi mdi-calendar-month"></i>
+                        </div>
+                        <div>
+                            <h1>จัดการปีการศึกษา</h1>
+                            <p class="header-subtitle">ระบบจัดการปีการศึกษาและภาคเรียน</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" id="createYearBtn">
+                        <i class="mdi mdi-plus-circle"></i> สร้างปีการศึกษาใหม่
+                    </button>
+                </div>
+
+                <!-- ปีการศึกษาปัจจุบัน -->
+                <div class="current-year-section">
+                    <div class="section-header">
+                        <h2><i class="mdi mdi-star-circle"></i> ปีการศึกษาปัจจุบัน</h2>
+                    </div>
+                    <div id="currentYearCard" class="year-card current">
+                        <div class="loading">
+                            <div class="loading-spinner"></div>
+                            <p>กำลังโหลด...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ปีการศึกษาทั้งหมด -->
+                <div class="all-years-section">
+                    <div class="section-header">
+                        <h2><i class="mdi mdi-format-list-bulleted"></i> ปีการศึกษาทั้งหมด</h2>
+                    </div>
+                    <div id="allYearsContainer" class="years-grid">
+                        <div class="loading">
+                            <div class="loading-spinner"></div>
+                            <p>กำลังโหลด...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal สร้าง/แก้ไขปีการศึกษา -->
+    <div id="yearModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle"><i class="mdi mdi-calendar-plus"></i> สร้างปีการศึกษาใหม่</h2>
+                <span class="close"><i class="mdi mdi-close"></i></span>
+            </div>
+            <form id="yearForm">
+                <input type="hidden" id="yearId">
+
+                <div class="form-group">
+                    <label for="yearName"><i class="mdi mdi-rename-box"></i> ชื่อปีการศึกษา <span class="required">*</span></label>
+                    <input type="text" id="yearName" required placeholder="เช่น 2567/1, 2567/2">
+                    <small><i class="mdi mdi-information"></i> ตัวอย่าง: 2567/1 (ภาคเรียนที่ 1 ปีการศึกษา 2567)</small>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="startDate"><i class="mdi mdi-calendar-start"></i> วันเริ่มต้น <span class="required">*</span></label>
+                        <input type="date" id="startDate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="endDate"><i class="mdi mdi-calendar-end"></i> วันสิ้นสุด <span class="required">*</span></label>
+                        <input type="date" id="endDate" required>
+                    </div>
+                </div>
+
+                <div class="form-group checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="setAsActive">
+                        <span><i class="mdi mdi-check-circle"></i> กำหนดเป็นปีการศึกษาปัจจุบัน</span>
+                    </label>
+                    <small><i class="mdi mdi-alert-circle"></i> หากเลือก ปีการศึกษาเดิมจะถูกปิดการใช้งานอัตโนมัติ</small>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancelBtn">
+                        <i class="mdi mdi-close-circle"></i> ยกเลิก
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="mdi mdi-content-save"></i> บันทึก
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal ยืนยันการลบ -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content modal-small">
+            <div class="modal-header delete-header">
+                <h2><i class="mdi mdi-alert-circle"></i> ยืนยันการลบ</h2>
+                <span class="close"><i class="mdi mdi-close"></i></span>
+            </div>
+            <div class="modal-body">
+                <div class="delete-warning">
+                    <i class="mdi mdi-alert"></i>
+                    <p>คุณแน่ใจหรือไม่ที่จะลบปีการศึกษา "<strong><span id="deleteYearName"></span></strong>"?</p>
+                </div>
+                <p class="warning-text">
+                    <i class="mdi mdi-information"></i> ข้อมูลที่เกี่ยวข้องทั้งหมดจะถูกลบด้วย และไม่สามารถกู้คืนได้
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancelDeleteBtn">
+                    <i class="mdi mdi-close-circle"></i> ยกเลิก
+                </button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                    <i class="mdi mdi-delete"></i> ลบ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal สถิติ -->
+    <div id="statsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header stats-header">
+                <h2><i class="mdi mdi-chart-box"></i> สถิติปีการศึกษา</h2>
+                <span class="close"><i class="mdi mdi-close"></i></span>
+            </div>
+            <div class="modal-body" id="statsContent">
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>กำลังโหลดสถิติ...</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary close-stats">
+                    <i class="mdi mdi-close-circle"></i> ปิด
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="JS/common.js"></script>
+    <script src="JS/mobile-menu.js"></script>
+    <script src="JS/owner-academic-years.js"></script>
+</body>
+</html>

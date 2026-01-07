@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - HR System</title>
+    
+    <link
+      href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css"
+      rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="CSS/dashboard.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+  </head>
+  <body>
+
+    <div class="sidebar">
+        <div class="profile">
+            <img id="sidebarProfilePic" src="/uploads/default.png" alt="Profile" class="profile-pic">
+            <div>
+                <h3 id="username">กำลังโหลด...</h3>
+                <h4 id="subjectname">กำลังโหลด...</h4>
+            </div>
+        </div>
+        <nav class="menu">
+            <a href="dashboard.html">📊 หน้าหลัก</a>
+            <a href="user_request.html">📝 ยื่นคำร้อง</a>
+            <a href="cal.html">💰 คำนวนเงินเดือน</a>
+            <a href="headsubrequests.html" style="display: none;">✅ อนุมัติคำร้อง</a>
+            <a href="user_status.html">📋 ติดตามคำร้อง</a>
+            <a href="manage_meetings.html" style="display: none;">🗓️ จัดการการประชุม</a>
+            <a href="profile.html">👤 แก้ไขโปรไฟล์</a>
+            <button onclick="logout()" type="button">🚪 ออกจากระบบ</button>
+        </nav>
+    </div>
+
+    <div class="main-content">
+      <div class="academic-year-banner" id="academicYearBanner">
+        <div class="banner-content">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <span>ปีการศึกษาปัจจุบัน: <strong id="currentAcademicYear">กำลังโหลด...</strong></span>
+        </div>
+      </div>
+
+      <h1>ยินดีต้อนรับสู่ระบบ HR</h1>
+      <p id="userInfo">กำลังโหลดข้อมูลผู้ใช้...</p>
+
+      
+      <div id="calendar-container">
+        <h2 style="text-align: center; margin-bottom: 20px; font-size: clamp(1.2rem, 3vw, 1.5rem);">ปฏิทินการประชุม</h2>
+        
+       
+        <div id="calendar" aria-label="ปฏิทินการประชุม"></div>
+        
+      
+        <div class="legend">
+          <h3 id="legend-title" style="text-align: center; margin-bottom: 10px; color: #555; font-size: clamp(14px, 2.5vw, 16px); font-weight: 500;">กิจกรรมที่กำลังจะมาถึง</h3>
+          <div class="legend-item" id="legend-items" role="list" aria-label="รายการกิจกรรม">
+            <div class="loading">กำลังโหลดข้อมูลกิจกรรม...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  
+    <script src="JS/mobile-menu.js"></script>
+    <script src="JS/common.js"></script>
+    <script src="JS/dashboard.js"></script>
+  </body>
+</html>

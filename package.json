@@ -1,0 +1,39 @@
+{
+  "name": "hr-backendnew",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha tests/integration/integration-test.js --timeout 15000",
+    "test:system": "node tests/system-test.js",
+    "test:db": "node tests/database-test.js",
+    "test:integration": "node tests/run-integration-tests.js",
+    "test:all": "npm run test:system && npm run test:db && npm run test:integration",
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@casl/ability": "^6.7.3",
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "express-session": "^1.18.2",
+    "google-auth-library": "^10.2.1",
+    "googleapis": "^161.0.0",
+    "multer": "^2.0.2",
+    "mysql2": "^3.14.3",
+    "nodemailer": "^7.0.9"
+  },
+  "devDependencies": {
+    "chai": "^6.2.0",
+    "chai-http": "^5.1.2",
+    "md-to-pdf": "^5.2.4",
+    "mocha": "^11.7.4",
+    "nodemon": "^3.1.10",
+    "supertest": "^7.1.4"
+  }
+}

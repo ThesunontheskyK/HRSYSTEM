@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Owner Dashboard - HR System</title>
+    
+    <!-- FullCalendar CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css"
+      rel="stylesheet">
+    
+    <!-- Material Design Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.2.96/css/materialdesignicons.min.css">
+    
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap"
+      rel="stylesheet">
+    
+    <!-- Common CSS (สำหรับ Sidebar และ Mobile Menu) -->
+    <link rel="stylesheet" href="CSS/owner-common.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="CSS/owner-dashboard.css">
+    
+    <!-- FullCalendar JS -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+  </head>
+  <body>
+    <!-- Mobile Menu Toggle (จะถูกสร้างโดย JavaScript) -->
+    
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="profile">
+        <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="Profile" class="profile-pic">
+        <div>
+          <h3 id="username">กำลังโหลด...</h3>
+          <h4 id="subjectname">ผู้บริหาร</h4>
+        </div>
+      </div>
+      <nav class="menu">
+        <a href="owner-dashboard.html" class="active" aria-current="page">
+          <i class="mdi mdi-view-dashboard me-2"></i> หน้าหลัก
+        </a>
+        <a href="owner-myemp.html">
+          <i class="mdi mdi-account-group me-2"></i> จัดการพนักงาน
+        </a>
+        <a href="owner-status.html" >
+          <i class="mdi mdi-file-document me-2"></i> อนุมัติคำร้อง
+        </a>
+        <a href="owner-check.html">
+          <i class="mdi mdi-calendar-check me-2"></i> การเข้างาน
+        </a>
+        <a href="owner-salary.html">
+          <i class="mdi mdi-calculator me-2"></i> การเงิน
+        </a>
+        <a href="owner-academic-years.html">
+          <i class="mdi mdi-calendar-multiple me-2"></i> จัดการปีการศึกษา
+        </a>
+        <button onclick="logout()" type="button">
+          <i class="mdi mdi-logout me-2"></i> ออกจากระบบ
+        </button>
+      </nav>
+    </div>
+
+    <!-- Mobile Overlay (จะถูกสร้างโดย JavaScript) -->
+    
+    <!-- Main Content -->
+    <div class="main-content">
+      <h1>Welcome to HR System Dashboard</h1>
+      <p id="userInfo">กำลังโหลดข้อมูลผู้ใช้...</p>
+
+      <!-- Dashboard Statistics -->
+      <div class="dashboard-grid">
+        <div class="stat-card employees">
+          <h3>จำนวนพนักงานทั้งหมด</h3>
+          <div class="stat-number" id="totalEmployees">-</div>
+          <div class="stat-detail" id="employeesDetail">กำลังโหลด...</div>
+        </div>
+
+        <div class="stat-card requests">
+          <h3>คำร้องรออนุมัติ</h3>
+          <div class="stat-number" id="pendingRequests">-</div>
+          <div class="stat-detail" id="requestsDetail">กำลังโหลด...</div>
+        </div>
+
+        <div class="stat-card salary">
+          <h3>ค่าใช้จ่ายเงินเดือนรายเดือน</h3>
+          <div class="stat-number" id="monthlySalary">-</div>
+          <div class="stat-detail" id="salaryDetail">กำลังโหลด...</div>
+        </div>
+      </div>
+
+      <!-- Calendar Section -->
+      <div id="calendar-container">
+        <h2 style="text-align: center; margin-bottom: 20px; font-size: clamp(1.2rem, 3vw, 1.5rem);">ปฏิทินการประชุม</h2>
+        
+        <!-- Loading Status -->
+        <div id="loading-status" style="text-align: center; color: #666; font-size: clamp(12px, 2vw, 14px); margin: 15px 0;">
+        </div>
+        
+        <!-- Calendar -->
+        <div id="calendar" aria-label="ปฏิทินการประชุม"></div>
+        
+        <!-- Legend -->
+        <div class="legend">
+          <h3 id="legend-title" style="text-align: center; margin-bottom: 10px; color: #555; font-size: clamp(14px, 2.5vw, 16px); font-weight: 500;">กิจกรรมที่กำลังจะมาถึง</h3>
+          <div class="legend-item" id="legend-items" role="list" aria-label="รายการกิจกรรม">
+            <div class="loading">กำลังโหลดข้อมูลกิจกรรม...</div>
+          </div>
+        </div>
+
+        <div class="meeting-actions" style="text-align: center; margin-top: 20px;">
+          <button id="toggleFormBtn" class="btn btn-primary">+ เพิ่มการประชุม</button>
+          <button id="deleteMeetingBtn" class="btn btn-danger">🗑 ลบการประชุม</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Advanced Add Meeting Modal -->
+    <div id="modalOverlay" class="modal-overlay">
+      <div class="modal-content">
+        <span id="closeModalBtn" class="close-btn">&times;</span>
+        <h2>เพิ่มการประชุม</h2>
+        
+        <form id="addMeetingForm">
+          <!-- ข้อมูลพื้นฐาน -->
+          <label>หัวข้อการประชุม:</label>
+          <input type="text" id="meetingTitle" required placeholder="เช่น ประชุมใหญ่ประจำเดือน">
+          
+          <div class="form-grid">
+            <div>
+              <label>วันเวลาเริ่ม:</label>
+              <input type="datetime-local" id="meetingStart" required>
+            </div>
+            <div>
+              <label>วันเวลาสิ้นสุด:</label>
+              <input type="datetime-local" id="meetingEnd">
+            </div>
+          </div>
+          
+          <div class="form-grid">
+            <div class="color-picker">
+              <label>สี:</label>
+              <input type="color" id="meetingColor" value="#2196F3">
+            </div>
+            <div class="description-field">
+              <label>รายละเอียด:</label>
+              <textarea id="meetingDescription" placeholder="รายละเอียดเพิ่มเติม (ไม่บังคับ)" 
+                        rows="2"></textarea>
+            </div>
+          </div>
+
+          <!-- ประเภทการประชุม -->
+          <label style="margin-top: 20px;">ประเภทการประชุม:</label>
+          <div class="meeting-type-tabs">
+            <div class="tab-option active" data-type="all">
+              <span>🌐</span>
+              <span>ทุกคน</span>
+            </div>
+            <div class="tab-option" data-type="department">
+              <span>🏢</span>
+              <span>ตามฝ่าย</span>
+            </div>
+            <div class="tab-option" data-type="subject">
+              <span>📚</span>
+              <span>ตามหมวดวิชา</span>
+            </div>
+            <div class="tab-option" data-type="specific_roles">
+              <span>👥</span>
+              <span>กลุ่มเฉพาะ</span>
+            </div>
+          </div>
+          <input type="hidden" id="meetingType" value="all">
+
+          <!-- ตัวเลือกสำหรับแต่ละประเภท -->
+          <!-- ฝ่าย -->
+          <div id="department-options" class="target-options" style="display: none;">
+            <label>เลือกฝ่าย:</label>
+            <div class="options-grid" id="department-list">
+              <!-- จะโหลดจาก API -->
+            </div>
+          </div>
+
+          <!-- หมวดวิชา -->
+          <div id="subject-options" class="target-options" style="display: none;">
+            <label>เลือกหมวดวิชา:</label>
+            <div class="options-grid" id="subject-list">
+              <!-- จะโหลดจาก API -->
+            </div>
+          </div>
+
+          <!-- กลุ่มเฉพาะ -->
+          <div id="roles-options" class="target-options" style="display: none;">
+            <label>เลือกตำแหน่ง:</label>
+            <div class="roles-container">
+              <div class="role-group">
+                <h4>แอดมิน:</h4>
+                <div class="options-grid" id="admin-roles-list">
+                  <!-- จะโหลดจาก API -->
+                </div>
+              </div>
+              <div class="role-group">
+                <h4>ครูและบุคลากร:</h4>
+                <div class="options-grid" id="user-roles-list">
+                  <!-- จะโหลดจาก API -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ตัวอย่างผู้เข้าร่วม -->
+          <div id="participants-preview" class="participants-preview" style="display: none;">
+            <h4>ผู้ที่จะได้รับเชิญ:</h4>
+            <div id="participants-count" class="participants-count"></div>
+            <div id="participants-list" class="participants-list"></div>
+          </div>
+          
+          <button type="submit" style="margin-top: 20px;">เพิ่มการประชุม</button>
+        </form>
+        <div id="addMeetingStatus" style="margin-top: 10px;"></div>
+      </div>
+    </div>
+
+    <!-- Delete Meeting Modal -->
+    <div id="deleteModalOverlay" class="modal-overlay">
+      <div class="modal-content">
+        <span id="closeDeleteModalBtn" class="close-btn">&times;</span>
+        <h2>ลบการประชุม</h2>
+        <div id="meetingList">
+          <div class="loading">กำลังโหลดรายการการประชุม...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="JS/common.js"></script>
+    <script src="JS/mobile-menu.js"></script>
+    <script src="JS/1owner-dashboard.js"></script>
+  </body>
+</html>

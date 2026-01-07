@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบคำนวณเงินเดือนและประวัติการขาด ลา มาสาย - HR System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="CSS/cal.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="profile">
+            <img id="sidebarProfilePic" src="/uploads/default.png" alt="Profile" class="profile-pic">
+            <h3 id="username">กำลังโหลด...</h3>
+            <h4 id="subjectname">Admin</h4>
+        </div>
+        <nav class="menu">
+            <a href="admin-dashboard.html">📊 หน้าหลัก</a>
+            <a href="admin_sendrequest.html">📝 ยื่นคำร้อง</a>
+            <a href="admin-requests.html">✅ อนุมัติคำร้อง</a>
+            <a href="admin_status.html">📋 ติดตามคำร้อง</a>
+            <a href="myemp.html">👥 จัดการบุคลากร</a>
+            <a href="admin-check.html">📊 การเข้างาน</a>
+            <a href="cal.html">💰 คำนวนเงินเดือน</a>
+            <a href="profile.html">👤 แก้ไขโปรไฟล์</a>
+            <button onclick="logout()" type="button">🚪 ออกจากระบบ</button>
+        </nav>
+    </div>
+
+
+    <div class="main-content">
+        <h1>ระบบคำนวณเงินเดือนและประวัติการขาด ลา มาสาย</h1>
+        <p id="userInfo">กำลังโหลดข้อมูลผู้ใช้...</p>
+
+        <div class="cal-container">
+            <div class="content-grid">
+                <div class="left-column">
+                    <div class="card">
+                        <h2 class="card-title">ข้อมูลพนักงาน</h2>
+                        <div class="info-section">
+                            <div class="info-item">
+                                <label>ชื่อ-นามสกุล</label>
+                                <div id="employeeName" class="info-value">กำลังโหลด...</div>
+                            </div>
+                            <div class="info-item">
+                                <label>รหัสพนักงาน</label>
+                                <div id="employeeId" class="info-value">กำลังโหลด...</div>
+                            </div>
+                            <div class="info-item">
+                                <label>ตำแหน่ง</label>
+                                <div id="employeeRole" class="info-value">กำลังโหลด...</div>
+                            </div>
+                            <div class="info-item">
+                                <label>Email</label>
+                                <div id="employeeSubject" class="info-value">กำลังโหลด...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title">ข้อมูลเงินเดือน</h2>
+                        <div class="info-section">
+                            <div class="info-item">
+                                <label>เงินเดือนพื้นฐาน (บาท)</label>
+                                <div id="baseSalaryDisplay" class="info-value">กำลังโหลด...</div>
+                            </div>
+                            <div class="info-item">
+                                <label>ค่าล่วงเวลา (OT) (บาท)</label>
+                                <div id="overtimeDisplay" class="info-value">กำลังโหลด...</div>
+                            </div>
+                            <div class="info-item">
+                                <label>โบนัส (บาท)</label>
+                                <div id="bonusDisplay" class="info-value">กำลังโหลด...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="right-column">
+                    <div class="card">
+                        <h2 class="card-title">ประวัติการขาด ลา มาสาย</h2>
+                        
+                        <div class="stats-section">
+                            <div class="stats-grid">
+                                <div class="stat-item stat-red">
+                                    <span class="stat-number" id="absenceCount">0</span>
+                                    <span class="stat-label">วันขาดงาน</span>
+                                </div>
+                                <div class="stat-item stat-yellow">
+                                    <span class="stat-number" id="leaveCount">0</span>
+                                    <span class="stat-label">วันลางาน</span>
+                                </div>
+                                <div class="stat-item stat-orange">
+                                    <span class="stat-number" id="lateCount">0</span>
+                                    <span class="stat-label">ครั้งมาสาย</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="table-container">
+                            <table class="attendance-table">
+                                <thead>
+                                    <tr>
+                                        <th>วันที่</th>
+                                        <th>ประเภท</th>
+                                        <th>เวลา</th>
+                                        <th>หมายเหตุ</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="attendanceRecords">
+                                    <tr>
+                                        <td colspan="4" class="no-data">ไม่พบประวัติการลา</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header-flex">
+                            <h2 class="card-title">ผลการคำนวณเงินเดือน</h2>
+                            <div class="last-updated">อัพเดทล่าสุด: <span id="lastUpdated">-</span></div>
+                        </div>
+                        
+                        <div class="calculation-grid">
+                            <div class="calculation-section">
+                                <h3 class="section-title income">รายรับ</h3>
+                                <div class="calculation-items">
+                                    <div class="calculation-item">
+                                        <span>เงินเดือนพื้นฐาน:</span>
+                                        <span id="displayBaseSalary" class="amount">0.00 บาท</span>
+                                    </div>
+                                    <div class="calculation-item">
+                                        <span>ค่าล่วงเวลา (OT):</span>
+                                        <span id="displayOvertime" class="amount">0.00 บาท</span>
+                                    </div>
+                                    <div class="calculation-item">
+                                        <span>โบนัส:</span>
+                                        <span id="displayBonus" class="amount">0.00 บาท</span>
+                                    </div>
+                                    <div class="calculation-item total">
+                                        <span>รวมรายรับ:</span>
+                                        <span id="displayTotalIncome" class="amount total-income">0.00 บาท</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="calculation-section">
+                                <h3 class="section-title deduction">รายหัก</h3>
+                                <div class="calculation-items">
+                                    <div class="calculation-item">
+                                        <span>หักขาดงาน:</span>
+                                        <span id="displayAbsenceDeduction" class="amount">0.00 บาท</span>
+                                    </div>
+                                    <div class="calculation-item">
+                                        <span>หักลางาน:</span>
+                                        <span id="displayLeaveDeduction" class="amount">0.00 บาท</span>
+                                    </div>
+                                    <div class="calculation-item">
+                                        <span>หักมาสาย:</span>
+                                        <span id="displayLateDeduction" class="amount">0.00 บาท</span>
+                                    </div>
+                                    <div class="calculation-item">
+                                        <span>หักรายการอื่นๆ:</span>
+                                        <span id="displayOtherDeduction" class="amount">0.00 บาท</span>
+                                    </div>
+                                    <div class="calculation-item total">
+                                        <span>รวมรายหัก:</span>
+                                        <span id="displayTotalDeduction" class="amount total-deduction">0.00 บาท</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="net-salary-section">
+                            <div class="net-salary-item">
+                                <span class="net-salary-label">เงินเดือนสุทธิ:</span>
+                                <span id="displayNetSalary" class="net-salary-amount">0.00 บาท</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="JS/mobile-menu.js"></script>
+    <script src="JS/common.js"></script>
+    <script src="JS/cal.js"></script>
+</body>
+</html>

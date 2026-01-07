@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="th">
+    <head>
+        <meta charset="utf-8">
+        <title>แก้ไขโปรไฟล์ - HR System</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link
+            href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="CSS/profile.css">
+    </head>
+    <body>
+
+        <div class="sidebar">
+            <div class="profile">
+                <img id="sidebarProfilePic" src="/uploads/default.png" alt="Profile" class="profile-pic">
+                <div>
+                    <h3 id="username">กำลังโหลด...</h3>
+                    <h4 id="subjectname">กำลังโหลด...</h4>
+                </div>
+            </div>
+            <nav class="menu">
+                 <a href="dashboard.html">📊 หน้าหลัก</a>
+            <a href="user_request.html">📝 ยื่นคำร้อง</a>
+            <a href="cal.html">💰 คำนวนเงินเดือน</a>
+            <a href="headsubrequests.html" style="display: none;">✅ อนุมัติคำร้อง</a>
+            <a href="user_status.html">📋 ติดตามคำร้อง</a>
+            <a href="profile.html">👤 แก้ไขโปรไฟล์</a>
+                <button onclick="logout()" type="button">🚪 ออกจากระบบ</button>
+            </nav>
+        </div>
+
+        <div class="main-content">
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <p>กำลังโหลดข้อมูลโปรไฟล์...</p>
+            </div>
+
+            <div id="content" style="display: none;">
+                <div class="profile-container">
+                    <div class="user-info-card">
+                        <div class="card-header">
+                            <h3>ข้อมูลผู้ใช้</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="user-avatar">
+                                <img id="profileImage" class="profile-pic"
+                                    src="/uploads/default.png" alt="Profile">
+                                <input type="file" id="imageUpload"
+                                    accept="image/*" style="display:none">
+                               
+                            </div>
+                            <h4 id="display-name">กำลังโหลด...</h4>
+                            <p class="user-email"
+                                id="display-email">กำลังโหลด...</p>
+                            <p class="user-role"
+                                id="display-role">กำลังโหลด...</p>
+                                 <button type="button" id="btnChangeImage"
+                                    class="btn-edit">เปลี่ยนรูป</button>
+                            <button type="button" class="btn-edit"
+                                id="editToggle" onclick="toggleEditMode()">
+                                แก้ไขข้อมูล
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="profile-form-card">
+                        <div class="card-body">
+                            <div id="alert-container"></div>
+
+                            <form id="profileForm">
+                                <div class="section">
+                                    <h3
+                                        class="section-title">ข้อมูลส่วนบุคคล</h3>
+
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="firstname">ชื่อ <span
+                                                    class="required">*</span></label>
+                                            <input type="text"
+                                                class="form-control"
+                                                id="firstname"
+                                                placeholder="กรอกชื่อ" required
+                                                readonly>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="lastname">นามสกุล <span
+                                                    class="required">*</span></label>
+                                            <input type="text"
+                                                class="form-control"
+                                                id="lastname"
+                                                placeholder="กรอกนามสกุล"
+                                                required readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="email">อีเมล</label>
+                                            <input type="email"
+                                                class="form-control readonly-field"
+                                                id="email"
+                                                placeholder="กรอกอีเมล"
+                                                readonly>
+                                            <small
+                                                class="field-note">ไม่สามารถแก้ไขอีเมลได้</small>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label
+                                                for="tel">เบอร์โทรศัพท์</label>
+                                            <input type="tel"
+                                                class="form-control" id="tel"
+                                                placeholder="กรอกเบอร์โทรศัพท์"
+                                                readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="age">อายุ</label>
+                                            <input type="number"
+                                                class="form-control" id="age"
+                                                placeholder="กรอกอายุ" min="1"
+                                                max="120" readonly>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="gender">เพศ</label>
+                                            <select class="form-control"
+                                                id="gender" disabled>
+                                                <option value>เลือกเพศ</option>
+                                                <option value="ชาย">ชาย</option>
+                                                <option
+                                                    value="หญิง">หญิง</option>
+                                                <option
+                                                    value="ไม่ระบุ">ไม่ระบุ</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label
+                                                for="birthdate">วันเกิด</label>
+                                            <input type="date"
+                                                class="form-control"
+                                                id="birthdate" readonly>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="nation">สัญชาติ</label>
+                                            <input type="text"
+                                                class="form-control" id="nation"
+                                                placeholder="กรอกสัญชาติ"
+                                                readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="religion">ศาสนา</label>
+                                            <input type="text"
+                                                class="form-control"
+                                                id="religion"
+                                                placeholder="กรอกศาสนา"
+                                                readonly>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label
+                                                for="salary">เงินเดือน</label>
+                                            <input type="text"
+                                                class="form-control readonly-field"
+                                                id="salary"
+                                                placeholder="เงินเดือน"
+                                                readonly>
+                                            <small
+                                                class="field-note">ไม่สามารถแก้ไขเงินเดือนได้</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="section">
+                                    <h3 class="section-title">ที่อยู่</h3>
+
+                                    <div class="form-group">
+                                        <label for="address">ที่อยู่</label>
+                                        <input type="text" class="form-control"
+                                            id="address"
+                                            placeholder="กรอกที่อยู่" readonly>
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="district">อำเภอ</label>
+                                            <input type="text"
+                                                class="form-control"
+                                                id="district"
+                                                placeholder="กรอกอำเภอ"
+                                                readonly>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label
+                                                for="provience">จังหวัด</label>
+                                            <input type="text"
+                                                class="form-control"
+                                                id="provience"
+                                                placeholder="กรอกจังหวัด"
+                                                readonly>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label
+                                                for="zipcode">รหัสไปรษณีย์</label>
+                                            <input type="text"
+                                                class="form-control"
+                                                id="zipcode"
+                                                placeholder="กรอกรหัสไปรษณีย์"
+                                                readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="section">
+                                    <h3 class="section-title">เปลี่ยนรหัสผ่าน</h3>
+
+                                    <div class="form-group">
+                                        <label for="currentPassword">รหัสผ่านปัจจุบัน</label>
+                                        <input type="password" class="form-control"
+                                            id="currentPassword"
+                                            placeholder="กรอกรหัสผ่านปัจจุบัน">
+                                    </div>
+
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="newPassword">รหัสผ่านใหม่</label>
+                                            <input type="password" class="form-control"
+                                                id="newPassword"
+                                                placeholder="กรอกรหัสผ่านใหม่">
+                                            <small class="field-note">รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร</small>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="confirmPassword">ยืนยันรหัสผ่านใหม่</label>
+                                            <input type="password" class="form-control"
+                                                id="confirmPassword"
+                                                placeholder="กรอกรหัสผ่านใหม่อีกครั้ง">
+                                        </div>
+                                    </div>
+
+                                    <button type="button" class="btn-save" id="btnChangePassword">
+                                        <span id="password-spinner" class="save-spinner" style="display: none;"></span>
+                                        เปลี่ยนรหัสผ่าน
+                                    </button>
+                                </div>
+
+                                <div class="form-actions" id="form-actions"
+                                    style="display: none;">
+                                    <button type="button" class="btn-cancel"
+                                        onclick="cancelEdit()">ยกเลิก</button>
+                                    <button type="submit" class="btn-save">
+                                        <span id="save-spinner"
+                                            class="save-spinner"
+                                            style="display: none;"></span>
+                                        บันทึกข้อมูล
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="JS/mobile-menu.js"></script>
+        <script src="JS/profile.js"></script>
+    </body>
+</html>

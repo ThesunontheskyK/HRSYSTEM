@@ -1,0 +1,1034 @@
+/* ========== SIDEBAR STANDARD ========== */
+body {
+    display: flex;
+    font-family: 'Prompt', sans-serif;
+    background-color: #f4f6f9;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+.sidebar {
+    width: 220px;
+    background-color: #2c3e50;
+    color: white;
+    min-height: 100vh;
+    padding: 20px 15px;
+    box-sizing: border-box;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+.profile {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.profile-pic {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+    border: 2px solid white;
+}
+
+.profile h3, #username {
+    font-size: 16px;
+    font-weight: 500;
+    margin: 5px 0;
+}
+
+.profile h4, #subjectname {
+    font-size: 14px;
+    font-weight: 300;
+    margin: 0;
+    opacity: 0.8;
+}
+
+.menu a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    transition: all 0.3s;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.menu a:hover {
+    background-color: #34495e;
+    transform: translateX(5px);
+}
+
+.menu a.active {
+    background-color: #3788d8;
+}
+
+.menu button {
+    display: block;
+    margin: 20px auto 0;
+    padding: 10px 20px;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s;
+    width: 100%;
+    font-family: 'Prompt', sans-serif;
+}
+
+.menu button:hover {
+    background-color: #c0392b;
+    transform: translateY(-2px);
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+    margin-left: 220px;
+    min-height: 100vh;
+}
+
+/* ========== MAIN CONTENT ========== */
+h1 {
+    text-align: center;
+    margin-bottom: 10px;
+    color: #2c3e50;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+#userInfo {
+    text-align: center;
+    font-size: 16px;
+    margin-bottom: 30px;
+    color: #666;
+}
+
+/* Cal Container */
+.cal-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Header Controls */
+.header-controls {
+    margin-bottom: 30px;
+}
+
+.controls-card {
+    background: #2c3e50;
+    color: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.controls-card h2 {
+    text-align: center;
+    margin: 0 0 20px 0;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.controls-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.control-select {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Prompt', sans-serif;
+    font-size: 14px;
+    background: white;
+    color: #333;
+    min-width: 120px;
+}
+
+.load-button {
+    padding: 10px 20px;
+    background-color: #f39c12;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s;
+    font-family: 'Prompt', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.load-button:hover {
+    background-color: #e67e22;
+    transform: translateY(-2px);
+}
+
+/* Content Grid */
+.content-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+}
+
+.left-column, .right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Card Styles */
+.card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.card-title {
+    color: #2c3e50;
+    font-size: 18px;
+    font-weight: 500;
+    margin: 0 0 20px 0;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 10px;
+}
+
+.card-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 10px;
+}
+
+.card-header-flex .card-title {
+    margin: 0;
+    border: none;
+    padding: 0;
+}
+
+.last-updated {
+    font-size: 12px;
+    color: #666;
+}
+
+/* Info Section */
+.info-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.info-item label {
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+}
+
+.info-value {
+    padding: 10px 12px;
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #2c3e50;
+    transition: background-color 0.3s;
+}
+
+.info-value:hover {
+    background-color: #e9ecef;
+}
+
+/* Stats Section */
+.stats-section {
+    margin-bottom: 25px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.stat-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.stat-number {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: #666;
+    text-align: center;
+}
+
+.stat-red .stat-number {
+    color: #e74c3c;
+}
+
+.stat-yellow .stat-number {
+    color: #f39c12;
+}
+
+.stat-orange .stat-number {
+    color: #e67e22;
+}
+
+/* Table Styles */
+.table-container {
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.attendance-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+.attendance-table th {
+    background-color: #f8f9fa;
+    padding: 12px;
+    text-align: left;
+    font-weight: 500;
+    color: #2c3e50;
+    border-bottom: 2px solid #e9ecef;
+    font-size: 14px;
+}
+
+.attendance-table td {
+    padding: 12px;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 14px;
+}
+
+.attendance-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.no-data {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+}
+
+/* Calculation Section */
+.calculation-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin-bottom: 25px;
+}
+
+.calculation-section {
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+    transition: box-shadow 0.3s;
+}
+
+.calculation-section:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 15px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.section-title.income {
+    color: #27ae60;
+}
+
+.section-title.deduction {
+    color: #e74c3c;
+}
+
+.calculation-items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.calculation-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+}
+
+.calculation-item.total {
+    border-top: 2px solid #f0f0f0;
+    padding-top: 15px;
+    margin-top: 10px;
+    font-weight: 600;
+}
+
+.amount {
+    font-weight: 500;
+}
+
+.total-income {
+    color: #27ae60;
+}
+
+.total-deduction {
+    color: #e74c3c;
+}
+
+/* Net Salary */
+.net-salary-section {
+    padding: 20px;
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    border-radius: 10px;
+    color: white;
+    text-align: center;
+}
+
+.net-salary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.net-salary-label {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.net-salary-amount {
+    font-size: 24px;
+    font-weight: 700;
+    color: #f1c40f;
+}
+
+/* Loading Animation */
+.loading {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.hidden {
+    display: none;
+}
+
+/* ========== MOBILE HAMBURGER MENU ========== */
+.mobile-menu-toggle {
+    display: none;
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1001;
+    background-color: #2c3e50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 18px;
+    width: 44px;
+    height: 44px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s;
+}
+
+.mobile-menu-toggle:hover {
+    background-color: #34495e;
+}
+
+.mobile-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+/* ========== RESPONSIVE BREAKPOINTS ========== */
+
+/* Large Desktop */
+@media (min-width: 1200px) {
+    .main-content {
+        padding: 30px;
+    }
+    
+    .cal-container {
+        max-width: 1400px;
+    }
+    
+    .content-grid {
+        grid-template-columns: 1fr 2.5fr;
+        gap: 30px;
+    }
+    
+    .card {
+        padding: 30px;
+    }
+}
+
+/* Desktop */
+@media (max-width: 1024px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .calculation-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+    }
+    
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 280px;
+        height: 100vh;
+        z-index: 1000;
+        transform: translateX(-100%);
+        overflow-y: auto;
+        transition: transform 0.3s ease;
+    }
+    
+    .sidebar.active {
+        transform: translateX(0);
+    }
+    
+    .mobile-menu-toggle {
+        display: block;
+    }
+    
+    .mobile-overlay.active {
+        display: block;
+    }
+    
+    .main-content {
+        margin-left: 0;
+        padding: 60px 15px 20px 15px;
+        width: 100%;
+    }
+    
+    h1 {
+        font-size: 20px;
+        margin-bottom: 8px;
+    }
+    
+    #userInfo {
+        font-size: 14px;
+        margin-bottom: 20px;
+        line-height: 1.4;
+    }
+    
+    .content-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .card {
+        padding: 20px;
+    }
+    
+    .card-title {
+        font-size: 16px;
+    }
+    
+    .card-header-flex {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .controls-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    
+    .control-select, .load-button {
+        width: 100%;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 15px;
+        gap: 10px;
+    }
+    
+    .calculation-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .net-salary-item {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+    
+    .net-salary-label {
+        font-size: 16px;
+    }
+    
+    .net-salary-amount {
+        font-size: 20px;
+    }
+    
+    .table-container {
+        overflow-x: auto;
+    }
+    
+    .attendance-table {
+        font-size: 12px;
+    }
+    
+    .attendance-table th,
+    .attendance-table td {
+        padding: 8px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .main-content {
+        padding: 60px 10px 15px 10px;
+    }
+    
+    .sidebar {
+        width: 260px;
+    }
+    
+    h1 {
+        font-size: 18px;
+        margin-bottom: 8px;
+    }
+    
+    #userInfo {
+        font-size: 13px;
+        margin-bottom: 15px;
+    }
+    
+    .profile-pic {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .profile h3, #username {
+        font-size: 14px;
+    }
+    
+    .profile h4, #subjectname {
+        font-size: 12px;
+    }
+    
+    .menu a {
+        padding: 12px 15px;
+        font-size: 15px;
+    }
+    
+    .menu button {
+        padding: 12px 20px;
+        font-size: 15px;
+        min-height: 48px;
+    }
+    
+    .card {
+        padding: 15px;
+        margin-bottom: 10px;
+    }
+    
+    .card-title {
+        font-size: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .info-item label {
+        font-size: 13px;
+    }
+    
+    .info-value {
+        padding: 8px 10px;
+        font-size: 13px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+        padding: 10px;
+        gap: 8px;
+    }
+    
+    .stat-item {
+        padding: 12px;
+    }
+    
+    .stat-number {
+        font-size: 20px;
+    }
+    
+    .stat-label {
+        font-size: 11px;
+    }
+    
+    .calculation-section {
+        padding: 15px;
+    }
+    
+    .section-title {
+        font-size: 14px;
+    }
+    
+    .calculation-item {
+        font-size: 13px;
+        padding: 6px 0;
+    }
+    
+    .amount {
+        font-size: 13px;
+    }
+    
+    .net-salary-section {
+        padding: 15px;
+    }
+    
+    .net-salary-label {
+        font-size: 14px;
+    }
+    
+    .net-salary-amount {
+        font-size: 18px;
+    }
+    
+    .attendance-table th,
+    .attendance-table td {
+        padding: 6px 4px;
+        font-size: 11px;
+    }
+    
+    .last-updated {
+        font-size: 11px;
+    }
+}
+
+/* Extra Small Mobile */
+@media (max-width: 360px) {
+    .main-content {
+        padding: 55px 8px 12px 8px;
+    }
+    
+    .sidebar {
+        width: 240px;
+    }
+    
+    h1 {
+        font-size: 16px;
+    }
+    
+    #userInfo {
+        font-size: 12px;
+    }
+    
+    .card {
+        padding: 12px;
+    }
+    
+    .card-title {
+        font-size: 14px;
+    }
+    
+    .info-value {
+        padding: 6px 8px;
+        font-size: 12px;
+    }
+    
+    .stat-number {
+        font-size: 18px;
+    }
+    
+    .stat-label {
+        font-size: 10px;
+    }
+    
+    .calculation-item {
+        font-size: 12px;
+    }
+    
+    .net-salary-amount {
+        font-size: 16px;
+    }
+    
+    .attendance-table th,
+    .attendance-table td {
+        padding: 4px 2px;
+        font-size: 10px;
+    }
+}
+
+/* ========== LANDSCAPE MOBILE ========== */
+@media (max-width: 768px) and (orientation: landscape) {
+    .sidebar {
+        width: 260px;
+    }
+    
+    .main-content {
+        padding: 50px 15px 15px 15px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .calculation-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* ========== TABLE RESPONSIVE ========== */
+@media (max-width: 768px) {
+    .attendance-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    
+    .attendance-table thead,
+    .attendance-table tbody,
+    .attendance-table th,
+    .attendance-table td,
+    .attendance-table tr {
+        display: block;
+    }
+    
+    .attendance-table thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    
+    .attendance-table tr {
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+        padding: 10px;
+        border-radius: 8px;
+        background: white;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .attendance-table td {
+        border: none;
+        border-bottom: 1px solid #eee;
+        position: relative;
+        padding-left: 50% !important;
+        padding-top: 8px;
+        padding-bottom: 8px;
+        white-space: normal;
+    }
+    
+    .attendance-table td:before {
+        content: attr(data-label) ": ";
+        position: absolute;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+    
+    .attendance-table td:last-child {
+        border-bottom: 0;
+    }
+}
+
+/* ========== ACCESSIBILITY ========== */
+@media (prefers-reduced-motion: reduce) {
+    .sidebar,
+    .mobile-menu-toggle,
+    .menu a,
+    .menu button,
+    .card,
+    .stat-item,
+    .load-button {
+        transition: none;
+    }
+    
+    .loading {
+        animation: none;
+    }
+}
+
+/* ========== PRINT STYLES ========== */
+@media print {
+    .sidebar,
+    .mobile-menu-toggle,
+    .mobile-overlay,
+    .controls-card {
+        display: none;
+    }
+    
+    .main-content {
+        margin-left: 0;
+        padding: 0;
+        width: 100%;
+    }
+    
+    .card {
+        box-shadow: none;
+        border: 1px solid #ccc;
+        page-break-inside: avoid;
+    }
+    
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .calculation-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    h1 {
+        font-size: 18px;
+    }
+    
+    .card-title {
+        font-size: 14px;
+    }
+}
+
+/* ========== HIGH CONTRAST MODE ========== */
+@media (prefers-contrast: high) {
+    .card,
+    .calculation-section,
+    .stat-item {
+        border: 2px solid #000;
+    }
+    
+    .info-value {
+        border: 1px solid #000;
+    }
+    
+    .attendance-table th,
+    .attendance-table td {
+        border: 1px solid #000;
+    }
+}
+
+/* ========== DARK MODE SUPPORT ========== */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #1a1a1a;
+        color: #e0e0e0;
+    }
+    
+    .card,
+    .calculation-section,
+    .stat-item {
+        background: #2d2d2d;
+        border: 1px solid #404040;
+    }
+    
+    .card-title,
+    .section-title {
+        color: #e0e0e0;
+    }
+    
+    .info-value {
+        background: #404040;
+        border: 1px solid #555;
+        color: #e0e0e0;
+    }
+    
+    .attendance-table th {
+        background: #404040;
+        color: #e0e0e0;
+    }
+    
+    .attendance-table tbody tr:hover {
+        background: #404040;
+    }
+    
+    .stats-grid {
+        background: #333;
+    }
+}

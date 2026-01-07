@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="th">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>เข้าสู่ระบบ - HR Management</title>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet" href="login.css">
+    </head>
+    <body>
+        <div class="login-container">
+            <div class="login-header">
+                <div class="logo">🏢</div>
+                <h1>เข้าสู่ระบบ</h1>
+                <p>ระบบจัดการบุคลากร</p>
+            </div>
+
+            <div class="login-form">
+                <div id="errorMessage" class="message error-message"
+                    style="display: none;"></div>
+                <div id="successMessage" class="message success-message"
+                    style="display: none;"></div>
+
+                <!-- Google Login -->
+                <div class="google-login">
+                    <button type="button" class="google-btn" id="googleSignInBtn"
+                        onclick="loginWithGoogle()">
+                        <svg class="google-icon" viewBox="0 0 24 24">
+                            <path fill="#4285F4"
+                                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                            <path fill="#34A853"
+                                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                            <path fill="#FBBC05"
+                                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                            <path fill="#EA4335"
+                                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                        </svg>
+                        เข้าสู่ระบบด้วย Google
+                    </button>
+                    
+                    <!-- Hidden div for Google Sign-In button rendering -->
+                    <div id="g_id_onload" style="display: none;"></div>
+                    <div id="g_id_signin" style="display: none;"></div>
+                </div>
+
+                <div class="divider">
+                    <span>หรือ</span>
+                </div>
+
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="email">อีเมล</label>
+                        <input type="email" id="email" name="email"
+                            class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">รหัสผ่าน</label>
+                        <div class="password-container">
+                            <input type="password" id="password" name="password"
+                                class="form-control" required>
+                            <span class="toggle-password"
+                                onclick="togglePassword()">👁️</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="login-btn" id="loginBtn">
+                        เข้าสู่ระบบ
+                    </button>
+
+                    <div class="forgot-password">
+                        <a href="/forgot-password.html">ลืมรหัสผ่าน?</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Google Sign-In API - โหลดแบบ async -->
+        <script src="https://accounts.google.com/gsi/client" async defer onload="onGoogleScriptLoad()"></script>
+
+        <script>
+            // Global variables
+            let GOOGLE_CLIENT_ID = '';
+            let googleInitialized = false;
+            let googleScriptLoaded = false;
+            let initializationAttempts = 0;
+            const MAX_INIT_ATTEMPTS = 3;
+
+            // Browser detection
+            const BrowserDetection = {
+                isChrome: () => /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor),
+                isFirefox: () => /Firefox/.test(navigator.userAgent),
+                isSafari: () => /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent),
+                isEdge: () => /Edg/.test(navigator.userAgent),
+                isOpera: () => /Opera|OPR/.test(navigator.userAgent),
+                isMobile: () => /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
+                supportsThirdPartyCookies: () => {
+                    // เช็คว่า browser รองรับ third-party cookies หรือไม่
+                    return !BrowserDetection.isSafari() || 
+                           (BrowserDetection.isSafari() && !BrowserDetection.isMobile());
+                }
+            };
+
+            // ตรวจสอบว่าเป็น development หรือ production
+            const isDevelopment = window.location.hostname === 'localhost' || 
+                                 window.location.hostname === '192.168.0.9' ||
+                                 window.location.hostname === '127.0.0.1';
+
+            // Callback when Google script is loaded
+            function onGoogleScriptLoad() {
+                console.log('Google script loaded successfully');
+                googleScriptLoaded = true;
+                loadGoogleClientId();
+            }
+
+            // Load Google Client ID from server
+            async function loadGoogleClientId() {
+                try {
+                    const response = await fetch('/api/config/google-client-id');
+                    const config = await response.json();
+                    
+                    GOOGLE_CLIENT_ID = config.client_id;
+                    
+                    if (!config.configured) {
+                        console.warn('Google Client ID not configured');
+                        if (isDevelopment) {
+                            showGoogleStatus('⚠️ Google Client ID ยังไม่ได้ตั้งค่า', 'warning');
+                        }
+                        return;
+                    }
+                    
+                    console.log('Google Client ID loaded:', GOOGLE_CLIENT_ID.substring(0, 12) + '...');
+                    initializeGoogleSignIn();
+                    
+                } catch (error) {
+                    console.error('Failed to load Google Client ID:', error);
+                    if (isDevelopment) {
+                        showGoogleStatus('❌ ไม่สามารถโหลด Google Client ID ได้', 'error');
+                    }
+                }
+            }
+
+            // Initialize Google Sign-In with unified method
+            async function initializeGoogleSignIn() {
+                if (googleInitialized || !GOOGLE_CLIENT_ID) return;
+                
+                initializationAttempts++;
+                console.log(`Initializing Google Sign-In (attempt ${initializationAttempts})`);
+
+               
+                if (typeof google === 'undefined' || !google.accounts) {
+                    console.log('Google API not ready, waiting...');
+                    if (initializationAttempts < MAX_INIT_ATTEMPTS) {
+                        setTimeout(initializeGoogleSignIn, 2000);
+                    } else {
+                        handleGoogleInitializationFailure();
+                    }
+                    return;
+                }
+
+                try {
+                    
+                    const browserInfo = getBrowserInfo();
+                    console.log('Browser info:', browserInfo);
+
+                    
+                    await initializeUniversalMethod();
+
+                    googleInitialized = true;
+                    
+                    if (isDevelopment) {
+                        showGoogleStatus(`✅ Google Sign-In พร้อมใช้งาน (${browserInfo.name})`, 'success');
+                    }
+
+                } catch (error) {
+                    console.error('Failed to initialize Google Sign-In:', error);
+                    if (initializationAttempts < MAX_INIT_ATTEMPTS) {
+                        setTimeout(initializeGoogleSignIn, 3000);
+                    } else {
+                        handleGoogleInitializationFailure();
+                    }
+                }
+            }
+
+            // Initialize with universal method for all browsers
+            async function initializeUniversalMethod() {
+                
+                google.accounts.id.initialize({
+                    client_id: GOOGLE_CLIENT_ID,
+                    callback: handleGoogleSignIn,
+                    auto_select: false,
+                    cancel_on_tap_outside: true,
+                    use_fedcm_for_prompt: false, 
+                    itp_support: true,
+                    ux_mode: 'popup' 
+                });
+
+                // Render invisible button for all browsers
+                google.accounts.id.renderButton(
+                    document.getElementById('g_id_signin'),
+                    {
+                        theme: 'outline',
+                        size: 'large',
+                        width: '100%',
+                        type: 'standard',
+                        shape: 'rectangular',
+                        text: 'signin_with',
+                        logo_alignment: 'left'
+                    }
+                );
+
+                console.log('Google Sign-In initialized with universal method');
+            }
+
+            // Handle initialization failure
+            function handleGoogleInitializationFailure() {
+                console.error('Google Sign-In initialization failed after multiple attempts');
+                
+                const googleBtn = document.getElementById('googleSignInBtn');
+                if (googleBtn) {
+                    googleBtn.style.opacity = '0.5';
+                    googleBtn.title = 'Google Sign-In ไม่พร้อมใช้งาน กรุณาลองใหม่หรือใช้วิธีอื่น';
+                }
+
+                if (isDevelopment) {
+                    showGoogleStatus('❌ Google Sign-In ล้มเหลว', 'error');
+                }
+            }
+
+            // Get browser information
+            function getBrowserInfo() {
+                const ua = navigator.userAgent;
+                
+                if (BrowserDetection.isChrome()) return { name: 'Chrome', supports3rdParty: true };
+                if (BrowserDetection.isFirefox()) return { name: 'Firefox', supports3rdParty: true };
+                if (BrowserDetection.isSafari()) return { name: 'Safari', supports3rdParty: false };
+                if (BrowserDetection.isEdge()) return { name: 'Edge', supports3rdParty: true };
+                if (BrowserDetection.isOpera()) return { name: 'Opera', supports3rdParty: true };
+                
+                return { name: 'Unknown', supports3rdParty: false };
+            }
+
+            // Enhanced Google Sign-In with simplified approach
+            async function loginWithGoogle() {
+                console.log('Google Sign-In button clicked');
+
+                if (!googleInitialized || typeof google === 'undefined') {
+                    showError('Google Sign-In ยังไม่พร้อมใช้งาน กรุณารอสักครู่และลองใหม่');
+                    return;
+                }
+
+                const googleBtn = document.getElementById('googleSignInBtn');
+                const originalContent = googleBtn.innerHTML;
+                
+                try {
+                    // แสดง loading state
+                    googleBtn.innerHTML = '<span class="loading"></span>เชื่อมต่อ Google...';
+                    googleBtn.disabled = true;
+
+                    // ลองใช้วิธีต่างๆ ตามลำดับ
+                    console.log('Attempting Google Sign-In...');
+                    await attemptGoogleSignIn();
+
+                } catch (error) {
+                    console.error('Google Sign-In error:', error);
+                    
+                    // แสดงข้อความผิดพลาดที่เหมาะสมตาม error type
+                    if (error.message.includes('popup')) {
+                        showError('กรุณาอนุญาต popup สำหรับเว็บไซต์นี้ แล้วลองใหม่');
+                    } else if (error.message.includes('blocked')) {
+                        showError('การเข้าสู่ระบบถูกบล็อก กรุณาตรวจสอบการตั้งค่า browser');
+                    } else {
+                        showError('ไม่สามารถเข้าสู่ระบบด้วย Google ได้ กรุณาลองอีกครั้งหรือใช้อีเมล/รหัสผ่าน');
+                    }
+                } finally {
+                    // คืนค่าปุ่มเดิม
+                    googleBtn.innerHTML = originalContent;
+                    googleBtn.disabled = false;
+                }
+            }
+
+            // ลองเข้าสู่ระบบด้วยวิธีต่างๆ
+            async function attemptGoogleSignIn() {
+                return new Promise((resolve, reject) => {
+                    let resolved = false;
+                    
+                    // Method 1: ใช้ One Tap prompt
+                    try {
+                        google.accounts.id.prompt((notification) => {
+                            console.log('One Tap prompt result:', notification);
+                            
+                            if (notification.isDisplayed()) {
+                                console.log('One Tap displayed successfully');
+                                resolved = true;
+                                resolve();
+                                return;
+                            }
+                            
+                            if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+                                console.log('One Tap not displayed, trying button method...');
+                                if (!resolved) {
+                                    attemptButtonMethod().then(resolve).catch(reject);
+                                }
+                            }
+                            
+                            if (notification.isDismissedMoment()) {
+                                if (!resolved) {
+                                    resolved = true;
+                                    reject(new Error('User dismissed the prompt'));
+                                }
+                            }
+                        });
+                        
+                        // Timeout สำหรับ One Tap
+                        setTimeout(() => {
+                            if (!resolved) {
+                                console.log('One Tap timeout, trying button method...');
+                                attemptButtonMethod().then(resolve).catch(reject);
+                            }
+                        }, 3000);
+                        
+                    } catch (error) {
+                        console.error('One Tap method failed:', error);
+                        if (!resolved) {
+                            attemptButtonMethod().then(resolve).catch(reject);
+                        }
+                    }
+                });
+            }
+
+            // Method 2: ใช้ invisible button
+            async function attemptButtonMethod() {
+                return new Promise((resolve, reject) => {
+                    try {
+                        const hiddenButton = document.getElementById('g_id_signin');
+                        const buttonElement = hiddenButton?.querySelector('[role="button"]') || 
+                                            hiddenButton?.querySelector('div[tabindex="0"]') ||
+                                            hiddenButton?.querySelector('div[style*="cursor: pointer"]') ||
+                                            hiddenButton?.querySelector('div');
+                        
+                        if (buttonElement) {
+                            console.log('Clicking hidden Google button...');
+                            
+                            // จำลอง click event
+                            const clickEvent = new MouseEvent('click', {
+                                bubbles: true,
+                                cancelable: true,
+                                view: window
+                            });
+                            
+                            buttonElement.dispatchEvent(clickEvent);
+                            
+                            // หากยังไม่ทำงาน ลอง click ธรรมดา
+                            setTimeout(() => {
+                                buttonElement.click();
+                            }, 100);
+                            
+                            resolve();
+                        } else {
+                            console.log('Creating new sign-in button...');
+                            createNewSignInButton().then(resolve).catch(reject);
+                        }
+                        
+                    } catch (error) {
+                        console.error('Button method failed:', error);
+                        createNewSignInButton().then(resolve).catch(reject);
+                    }
+                });
+            }
+
+            // Method 3: สร้าง button ใหม่
+            async function createNewSignInButton() {
+                return new Promise((resolve, reject) => {
+                    try {
+                        console.log('Creating new Google Sign-In button...');
+                        
+                        // สร้าง container ชั่วคราว
+                        const tempContainer = document.createElement('div');
+                        tempContainer.style.cssText = `
+                            position: fixed;
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%);
+                            z-index: 10000;
+                            background: white;
+                            padding: 20px;
+                            border-radius: 8px;
+                            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+                        `;
+                        
+                        // สร้าง close button
+                        const closeBtn = document.createElement('button');
+                        closeBtn.innerHTML = '✖';
+                        closeBtn.style.cssText = `
+                            position: absolute;
+                            top: 5px;
+                            right: 10px;
+                            border: none;
+                            background: none;
+                            font-size: 16px;
+                            cursor: pointer;
+                            color: #666;
+                        `;
+                        closeBtn.onclick = () => {
+                            document.body.removeChild(tempContainer);
+                            reject(new Error('User closed sign-in dialog'));
+                        };
+                        
+                        const title = document.createElement('div');
+                        title.textContent = 'เข้าสู่ระบบด้วย Google';
+                        title.style.cssText = 'margin-bottom: 15px; font-weight: 500; text-align: center;';
+                        
+                        tempContainer.appendChild(closeBtn);
+                        tempContainer.appendChild(title);
+                        document.body.appendChild(tempContainer);
+                        
+                        // Render Google button ใหม่
+                        google.accounts.id.renderButton(tempContainer, {
+                            theme: 'filled_blue',
+                            size: 'large',
+                            type: 'standard',
+                            shape: 'rectangular',
+                            text: 'signin_with',
+                            logo_alignment: 'left',
+                            width: '250'
+                        });
+                        
+                        // ตั้ง timeout เพื่อปิด dialog
+                        const timeout = setTimeout(() => {
+                            if (document.body.contains(tempContainer)) {
+                                document.body.removeChild(tempContainer);
+                                reject(new Error('Sign-in timeout'));
+                            }
+                        }, 30000); // 30 วินาที
+                        
+                        // เมื่อสำเร็จให้ปิด dialog
+                        const originalCallback = handleGoogleSignIn;
+                        window.tempGoogleCallback = (response) => {
+                            clearTimeout(timeout);
+                            if (document.body.contains(tempContainer)) {
+                                document.body.removeChild(tempContainer);
+                            }
+                            originalCallback(response);
+                            resolve();
+                        };
+                        
+                        // อัพเดท callback ชั่วคราว
+                        google.accounts.id.initialize({
+                            client_id: GOOGLE_CLIENT_ID,
+                            callback: window.tempGoogleCallback,
+                            auto_select: false,
+                            cancel_on_tap_outside: false
+                        });
+                        
+                    } catch (error) {
+                        console.error('Failed to create new sign-in button:', error);
+                        reject(error);
+                    }
+                });
+            }
+
+           
+            async function attemptPopupLogin() {
+                return new Promise((resolve, reject) => {
+                    try {
+                        console.log('Attempting popup login with GSI...');
+                        
+                        // ใช้ Google Identity Services แทน OAuth direct
+                        if (google && google.accounts && google.accounts.id) {
+                            // Force show the One Tap dialog
+                            google.accounts.id.prompt((notification) => {
+                                console.log('One Tap notification:', notification);
+                                
+                                if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+                                    // ลองใช้ invisible button click
+                                    setTimeout(() => {
+                                        const hiddenButton = document.getElementById('g_id_signin');
+                                        const buttonElement = hiddenButton?.querySelector('[role="button"]') || 
+                                                            hiddenButton?.querySelector('div[style*="cursor"]') ||
+                                                            hiddenButton?.querySelector('div');
+                                        
+                                        if (buttonElement) {
+                                            console.log('Clicking hidden Google button...');
+                                            buttonElement.click();
+                                            resolve();
+                                        } else {
+                                            console.log('Creating manual sign-in trigger...');
+                                            createManualSignInTrigger().then(resolve).catch(reject);
+                                        }
+                                    }, 500);
+                                } else {
+                                    resolve();
+                                }
+                            });
+                        } else {
+                            reject(new Error('Google Identity Services not available'));
+                        }
+
+                    } catch (error) {
+                        console.error('Popup method failed:', error);
+                        createManualSignInTrigger().then(resolve).catch(reject);
+                    }
+                });
+            }
+
+            // Handle Google Sign-In Response with cleanup
+            async function handleGoogleSignIn(response) {
+                try {
+                    console.log('Google Sign-In response received');
+                    
+                    // ทำความสะอาด temporary callback
+                    if (window.tempGoogleCallback) {
+                        google.accounts.id.initialize({
+                            client_id: GOOGLE_CLIENT_ID,
+                            callback: handleGoogleSignIn,
+                            auto_select: false,
+                            cancel_on_tap_outside: true
+                        });
+                        delete window.tempGoogleCallback;
+                    }
+                    
+                    if (!response.credential) {
+                        throw new Error('No credential received from Google');
+                    }
+
+                    // Decode JWT token สำหรับ debug
+                    try {
+                        const userInfo = JSON.parse(atob(response.credential.split('.')[1]));
+                        console.log('Decoded user info:', {
+                            email: userInfo.email,
+                            name: userInfo.name,
+                            picture: userInfo.picture,
+                            exp: new Date(userInfo.exp * 1000)
+                        });
+                    } catch (decodeError) {
+                        console.warn('Could not decode token for debugging:', decodeError);
+                    }
+                    
+                    // ส่งข้อมูลไป backend
+                    const apiResponse = await fetch('/api/google-auth', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            token: response.credential
+                        })
+                    });
+                    
+                    const data = await apiResponse.json();
+                    
+                    if (data.success) {
+                        console.log('Google authentication successful');
+                        handleSuccessfulLogin(data.user, true);
+                    } else {
+                        console.error('Google auth failed:', data.message);
+                        showError(data.message || 'ไม่สามารถเข้าสู่ระบบด้วย Google ได้');
+                    }
+                    
+                } catch (error) {
+                    console.error('Error processing Google sign-in:', error);
+                    showError('เกิดข้อผิดพลาดในการประมวลผล Google Sign-In');
+                }
+            }
+
+            // Test Google Sign-In functionality
+            async function testGoogleSignIn() {
+                console.log('=== Google Sign-In Test ===');
+                console.log('Script loaded:', googleScriptLoaded);
+                console.log('Google API available:', typeof google !== 'undefined');
+                console.log('Google accounts available:', typeof google !== 'undefined' && !!google.accounts);
+                console.log('Initialized:', googleInitialized);
+                console.log('Client ID:', GOOGLE_CLIENT_ID ? GOOGLE_CLIENT_ID.substring(0, 20) + '...' : 'Not loaded');
+                console.log('Browser info:', getBrowserInfo());
+                console.log('Third-party cookies supported:', BrowserDetection.supportsThirdPartyCookies());
+                
+                // Test API availability
+                if (typeof google !== 'undefined' && google.accounts) {
+                    try {
+                        console.log('Testing Google API...');
+                        google.accounts.id.disableAutoSelect();
+                        console.log('✅ Google API test successful');
+                    } catch (error) {
+                        console.log('❌ Google API test failed:', error);
+                    }
+                }
+            }
+
+            // แสดงสถานะ Google Sign-In
+            function showGoogleStatus(message, type = 'info') {
+                if (!isDevelopment) return;
+                
+                const statusDiv = document.createElement('div');
+                statusDiv.textContent = message;
+                statusDiv.style.cssText = `
+                    position: fixed;
+                    top: 10px;
+                    right: 10px;
+                    padding: 10px 15px;
+                    border-radius: 8px;
+                    font-size: 12px;
+                    font-weight: 500;
+                    z-index: 1000;
+                    max-width: 300px;
+                    ${type === 'success' ? 'background: #d4edda; color: #155724; border: 1px solid #c3e6cb;' : ''}
+                    ${type === 'warning' ? 'background: #fff3cd; color: #856404; border: 1px solid #ffeaa7;' : ''}
+                    ${type === 'error' ? 'background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;' : ''}
+                `;
+                
+                document.body.appendChild(statusDiv);
+                setTimeout(() => statusDiv.remove(), 7000);
+            }
+
+            // ฟังก์ชันสำหรับแสดง/ซ่อนรหัสผ่าน
+            function togglePassword() {
+                const passwordInput = document.getElementById('password');
+                const toggleBtn = document.querySelector('.toggle-password');
+                
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    toggleBtn.textContent = '🙈';
+                } else {
+                    passwordInput.type = 'password';
+                    toggleBtn.textContent = '👁️';
+                }
+            }
+
+            // ฟังก์ชันสำหรับแสดงข้อผิดพลาด
+            function showError(message) {
+                const errorDiv = document.getElementById('errorMessage');
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+                document.getElementById('successMessage').style.display = 'none';
+                
+                // Auto hide after 5 seconds
+                setTimeout(() => {
+                    errorDiv.style.display = 'none';
+                }, 5000);
+            }
+
+            // ฟังก์ชันสำหรับแสดงข้อความสำเร็จ
+            function showSuccess(message) {
+                const successDiv = document.getElementById('successMessage');
+                successDiv.textContent = message;
+                successDiv.style.display = 'block';
+                document.getElementById('errorMessage').style.display = 'none';
+            }
+
+            // ฟังก์ชันจัดการเมื่อ login สำเร็จ
+            function handleSuccessfulLogin(user, isGoogleAuth = false) {
+                // บันทึกข้อมูลผู้ใช้ใน localStorage
+                const userData = {
+                    userid: user.userid,
+                    email: user.email,
+                    firstname: user.firstname,
+                    lastname: user.lastname,
+                    role_code: user.role_code,
+                    role_group: user.role_group,
+                    isGoogleAuth: isGoogleAuth
+                };
+
+                // เพิ่มข้อมูล permissions สำหรับ admin
+                if (user.permissions) {
+                    userData.permissions = user.permissions;
+                    userData.department = user.department;
+                    userData.manageable_departments = user.manageable_departments;
+                }
+
+                localStorage.setItem('loggedInUser', JSON.stringify(userData));
+
+                // แสดงข้อความสำเร็จพร้อมบอก role
+                const roleText = getRoleDisplayName(user.role_group, user.role_code);
+                const authMethod = isGoogleAuth ? 'ด้วย Google' : '';
+                showSuccess(`เข้าสู่ระบบ${authMethod}สำเร็จ ยินดีต้อนรับ ${roleText}`);
+                
+                // Redirect ตาม role_group
+                setTimeout(() => {
+                    const redirectUrl = getRedirectUrl(user.role_group);
+                    window.location.href = redirectUrl;
+                }, 1500);
+            }
+
+            // ฟังก์ชันแปลง role เป็นชื่อที่อ่านง่าย
+            function getRoleDisplayName(roleGroup, roleCode) {
+                switch(roleGroup) {
+                    case 'user':
+                        return 'ผู้ใช้ทั่วไป';
+                    case 'admin':
+                        return 'แอดมิน';
+                    case 'owner':
+                        return 'เจ้าของระบบ';
+                    default:
+                        return 'ผู้ใช้';
+                }
+            }
+
+            // ฟังก์ชันกำหนด URL สำหรับ redirect
+            function getRedirectUrl(roleGroup) {
+                switch(roleGroup) {
+                    case 'user':
+                        return 'user/dashboard.html';
+                    case 'admin':
+                        return 'admin/admin-dashboard.html';
+                    case 'owner':
+                        return 'owner/owner-dashboard.html';
+                    default:
+                        return 'user/dashboard.html';
+                }
+            }
+
+            // ฟังก์ชัน Login หลัก
+            async function performLogin() {
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+
+                if (!email || !password) {
+                    showError('กรุณากรอกอีเมลและรหัสผ่าน');
+                    return;
+                }
+
+                const loginBtn = document.getElementById('loginBtn');
+                loginBtn.disabled = true;
+                loginBtn.innerHTML = '<span class="loading"></span>กำลังเข้าสู่ระบบ...';
+
+                try {
+                    const response = await fetch('/api/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ email, password })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        handleSuccessfulLogin(data.user);
+                    } else {
+                        showError(data.error || 'เข้าสู่ระบบล้มเหลว');
+                    }
+                } catch (error) {
+                    console.error('Login error:', error);
+                    showError('เกิดข้อผิดพลาดในการเข้าสู่ระบบ');
+                } finally {
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = 'เข้าสู่ระบบ';
+                }
+            }
+
+            // ฟังก์ชันลืมรหัสผ่าน
+            function forgotPassword() {
+                alert('ฟีเจอร์นี้ยังไม่พร้อมใช้งาน กรุณาติดต่อผู้ดูแลระบบ');
+            }
+
+            // Event Listeners
+            document.addEventListener('DOMContentLoaded', function() {
+                console.log('DOM loaded, preparing Google Sign-In...');
+                
+                // Check if Google script was already loaded
+                if (!googleScriptLoaded && typeof google !== 'undefined') {
+                    onGoogleScriptLoad();
+                }
+
+                // Form submission
+                document.getElementById('loginForm').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    performLogin();
+                });
+
+                // Enter key handling
+                document.getElementById('email').addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        document.getElementById('password').focus();
+                    }
+                });
+                
+                document.getElementById('password').addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        performLogin();
+                    }
+                });
+
+                // Check browser compatibility
+                if (isDevelopment) {
+                    setTimeout(() => {
+                        const browserInfo = getBrowserInfo();
+                        console.log('Browser compatibility check:', browserInfo);
+                        
+                        if (!browserInfo.supports3rdParty) {
+                            showGoogleStatus(`⚠️ ${browserInfo.name} อาจมีข้อจำกัดกับ Google Sign-In`, 'warning');
+                        }
+                    }, 1000);
+                }
+            });
+
+            // Check if user is already logged in
+            window.addEventListener('load', function() {
+                const loggedInUser = localStorage.getItem('loggedInUser');
+                if (loggedInUser) {
+                    try {
+                        const user = JSON.parse(loggedInUser);
+                        const redirectUrl = getRedirectUrl(user.role_group);
+                        window.location.href = redirectUrl;
+                    } catch (error) {
+                        console.error('Error parsing logged in user:', error);
+                        localStorage.removeItem('loggedInUser');
+                    }
+                }
+            });
+
+            
+            // Error handling for script loading failures
+            window.addEventListener('error', function(e) {
+                if (e.filename && e.filename.includes('accounts.google.com')) {
+                    console.error('Failed to load Google Sign-In script');
+                    if (isDevelopment) {
+                        showGoogleStatus('❌ Google Script โหลดไม่สำเร็จ', 'error');
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>

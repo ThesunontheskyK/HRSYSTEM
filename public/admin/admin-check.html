@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="th">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ประวัติการเข้างาน - ระบบบริหารโรงเรียน</title>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap"
+            rel="stylesheet">
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.2.96/css/materialdesignicons.min.css">
+        <link rel="stylesheet" href="CSS/admin-check.css">
+    </head>
+    <body>
+        <!-- Mobile Menu Toggle (จะถูกสร้างโดย JavaScript) -->
+
+        <!-- Mobile Overlay (จะถูกสร้างโดย JavaScript) -->
+
+        <div class="sidebar">
+            <div class="profile">
+                <img id="sidebarProfilePic" src="/uploads/default.png"
+                    alt="Profile" class="profile-pic">
+                <div>
+                    <h3 id="username">กำลังโหลด...</h3>
+                    <h4 id="subjectname">Admin</h4>
+                </div>
+            </div>
+            <nav class="menu">
+                <a href="admin-dashboard.html">📊 หน้าหลัก</a>
+                <a href="admin_sendrequest.html">📝 ยื่นคำร้อง</a>
+                <a href="admin-requests.html">✅ อนุมัติคำร้อง</a>
+                <a href="admin_status.html">📋 ติดตามคำร้อง</a>
+                <a href="myemp.html">👥 จัดการบุคลากร</a>
+                <a href="admin-check.html">📊 การเข้างาน</a>
+                <a href="cal.html">💰 คำนวนเงินเดือน</a>
+                <a href="profile.html">👤 แก้ไขโปรไฟล์</a>
+                <button onclick="logout()" type="button">🚪 ออกจากระบบ</button>
+            </nav>
+        </div>
+
+        <div class="main-content">
+            <div class="header">
+                <h1>⏰ ประวัติการเข้างาน</h1>
+                <p>ตรวจสอบและจัดการข้อมูลการเข้างานของพนักงานในความรับผิดชอบ</p>
+            </div>
+
+            <!-- CSV Import Section -->
+            <div class="import-section">
+                <div class="import-header">
+                    <i class="mdi mdi-upload"></i> นำเข้าข้อมูลการเข้างาน
+                </div>
+                <div class="import-body" id="importSection">
+                    <h3><i class="mdi mdi-file-excel"></i> นำเข้าข้อมูลจาก
+                        CSV</h3>
+                    <p>ลากไฟล์ CSV มาวางที่นี่ หรือคลิกเพื่อเลือกไฟล์</p>
+                    <input type="file" id="csvFile" class="file-input"
+                        accept=".csv,.txt" />
+
+                    <div style="margin-bottom: 15px;">
+                        <label for="csvFile" class="file-input-label">
+                            <i class="mdi mdi-file-excel"></i> เลือกไฟล์ CSV
+                        </label>
+                        <button class="sample-btn" onclick="downloadSample()">
+                            <i class="mdi mdi-download"></i> ดาวน์โหลดตัวอย่าง
+                        </button>
+                    </div>
+
+                    <div
+                        style="font-size: 12px; color: #666; margin-top: 10px; text-align: left; max-width: 500px; margin-left: auto; margin-right: auto;">
+                        <strong>รูปแบบไฟล์:</strong>
+                        userid,status,note,timein,timeout<br>
+                        <strong>Status:</strong> present (มาทำงาน), late
+                        (มาสาย), absent (ขาดงาน), leave (ลา)<br>
+                        <strong>รูปแบบเวลา:</strong> YYYY-MM-DD HH:MM:SS หรือ
+                        DD/MM/YYYY HH:MM
+                    </div>
+
+                    <div class="import-preview" id="importPreview">
+                        <h4><i class="mdi mdi-table"></i> ตัวอย่างข้อมูล</h4>
+                        <table class="preview-table" id="previewTable">
+                            <thead>
+                                <tr>
+                                    <th>User ID</th>
+                                    <th>Status</th>
+                                    <th>Note</th>
+                                    <th>Time In</th>
+                                    <th>Time Out</th>
+                                </tr>
+                            </thead>
+                            <tbody id="previewTableBody">
+                            </tbody>
+                        </table>
+                        <div style="margin-top: 15px;">
+                            <button class="btn btn-success"
+                                onclick="importCsvData()">
+                                <i class="mdi mdi-check"></i> บันทึกข้อมูล
+                            </button>
+                            <button class="btn btn-danger"
+                                onclick="cancelImport()">
+                                <i class="mdi mdi-close"></i> ยกเลิก
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Section -->
+            <div class="filter-section">
+                <div class="filter-grid">
+                    <div class="filter-group">
+                        <label><i class="mdi mdi-magnify"></i>
+                            ค้นหาพนักงาน</label>
+                        <input type="text" id="employeeSearch"
+                            placeholder="ชื่อ-นามสกุล หรือ อีเมล">
+                    </div>
+                    <div class="filter-group">
+                        <label><i class="mdi mdi-calendar-start"></i>
+                            วันที่เริ่มต้น</label>
+                        <input type="date" id="startDate">
+                    </div>
+                    <div class="filter-group">
+                        <label><i class="mdi mdi-calendar-end"></i>
+                            วันที่สิ้นสุด</label>
+                        <input type="date" id="endDate">
+                    </div>
+                    <div class="filter-group">
+                        <label><i class="mdi mdi-format-list-bulleted"></i>
+                            สถานะ</label>
+                        <select id="statusFilter">
+                            <option value>ทั้งหมด</option>
+                            <option value="present">มาทำงาน</option>
+                            <option value="late">มาสาย</option>
+                            <option value="absent">ขาดงาน</option>
+                            <option value="leave">ลา</option>
+                        </select>
+                    </div>
+                    <div class="filter-actions">
+                        <button class="btn btn-primary"
+                            onclick="applyFilters()">
+                            <i class="mdi mdi-magnify"></i> ค้นหา
+                        </button>
+                        <button class="btn btn-secondary"
+                            onclick="resetFilters()">
+                            <i class="mdi mdi-refresh"></i> รีเซ็ต
+                        </button>
+                        <button class="btn btn-success" onclick="exportData()">
+                            <i class="mdi mdi-download"></i> ส่งออก
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Section -->
+            <div class="stats-section">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalDays">0</div>
+                    <div class="stat-label">รายการทั้งหมด</div>
+                </div>
+                <div class="stat-card present">
+                    <div class="stat-number" id="presentDays">0</div>
+                    <div class="stat-label">มาทำงาน</div>
+                </div>
+                <div class="stat-card late">
+                    <div class="stat-number" id="lateDays">0</div>
+                    <div class="stat-label">มาสาย</div>
+                </div>
+                <div class="stat-card absent">
+                    <div class="stat-number" id="absentDays">0</div>
+                    <div class="stat-label">ขาดงาน</div>
+                </div>
+                <div class="stat-card leave">
+                    <div class="stat-number" id="leaveDays">0</div>
+                    <div class="stat-label">ลา</div>
+                </div>
+            </div>
+
+            <!-- Attendance Table -->
+            <div class="attendance-container">
+                <div class="table-header">
+                    <span><i class="mdi mdi-table"></i> ข้อมูลการเข้างาน</span>
+                    <div class="table-actions">
+                        <button class="btn btn-primary" onclick="refreshData()">
+                            <i class="mdi mdi-refresh"></i> รีเฟรช
+                        </button>
+                    </div>
+                </div>
+
+                <div class="loading" id="loadingState" style="display: none;">
+                    <div class="loading-spinner"></div>
+                    <span>กำลังโหลดข้อมูล...</span>
+                </div>
+
+                <table class="attendance-table" id="attendanceTable"
+                    style="display: none;">
+                    <thead>
+                        <tr>
+                            <th><i class="mdi mdi-calendar"></i> วันที่</th>
+                            <th><i class="mdi mdi-account"></i> พนักงาน</th>
+                            <th><i class="mdi mdi-clock-in"></i>
+                                เวลาเข้างาน</th>
+                            <th><i class="mdi mdi-clock-out"></i>
+                                เวลาออกงาน</th>
+                            <th><i class="mdi mdi-clock"></i> ชั่วโมงทำงาน</th>
+                            <th><i class="mdi mdi-information"></i> สถานะ</th>
+                            <th><i class="mdi mdi-note-text"></i> หมายเหตุ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="attendanceTableBody">
+                    </tbody>
+                </table>
+
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <div class="empty-icon">⏰</div>
+                    <h3>ไม่พบข้อมูลการเข้างาน</h3>
+                    <p>ไม่มีข้อมูลการเข้างานที่ตรงกับเงื่อนไขการค้นหา</p>
+                </div>
+
+                <div class="pagination" id="pagination">
+                    <!-- Pagination จะถูกสร้างโดย JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Import Result Modal -->
+        <div id="importResultModal" class="import-result-modal" style="display: none;">
+            <div class="import-result-content">
+                <div class="import-result-header">
+                    <h2><i class="mdi mdi-clipboard-check"></i> ผลลัพธ์การนำเข้าข้อมูล</h2>
+                    <button class="close-modal-btn" onclick="closeImportResultModal()">
+                        <i class="mdi mdi-close"></i>
+                    </button>
+                </div>
+
+                <div class="import-result-summary">
+                    <div class="summary-card success-summary">
+                        <i class="mdi mdi-check-circle"></i>
+                        <div>
+                            <div class="summary-number" id="successCount">0</div>
+                            <div class="summary-label">สำเร็จ</div>
+                        </div>
+                    </div>
+                    <div class="summary-card failed-summary">
+                        <i class="mdi mdi-alert-circle"></i>
+                        <div>
+                            <div class="summary-number" id="failedCount">0</div>
+                            <div class="summary-label">ล้มเหลว</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="import-result-tabs">
+                    <button class="tab-btn active" onclick="showImportTab('success')">
+                        <i class="mdi mdi-check-circle"></i> ข้อมูลที่สำเร็จ
+                    </button>
+                    <button class="tab-btn" onclick="showImportTab('failed')">
+                        <i class="mdi mdi-alert-circle"></i> ข้อมูลที่ล้มเหลว
+                    </button>
+                </div>
+
+                <div class="import-result-body">
+                    <!-- Success Records Tab -->
+                    <div id="successTab" class="tab-content active">
+                        <div class="table-container">
+                            <table class="result-table">
+                                <thead>
+                                    <tr>
+                                        <th>ลำดับ</th>
+                                        <th>User ID</th>
+                                        <th>ชื่อพนักงาน</th>
+                                        <th>สถานะ</th>
+                                        <th>วันที่</th>
+                                        <th>การดำเนินการ</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="successTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Failed Records Tab -->
+                    <div id="failedTab" class="tab-content">
+                        <div class="table-container">
+                            <table class="result-table">
+                                <thead>
+                                    <tr>
+                                        <th>ลำดับ</th>
+                                        <th>User ID</th>
+                                        <th>Status</th>
+                                        <th>Time In</th>
+                                        <th>Time Out</th>
+                                        <th>สาเหตุ</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="failedTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="import-result-footer">
+                    <button class="btn btn-primary" onclick="closeImportResultModal()">
+                        <i class="mdi mdi-check"></i> ปิด
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scripts -->
+        <script src="JS/mobile-menu.js"></script>
+        <script src="JS/common.js"></script>
+        <script src="JS/admin-check.js"></script>
+    </body>
+</html>

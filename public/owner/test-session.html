@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ทดสอบ Session</title>
+    <style>
+        body {
+            font-family: 'Prompt', sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .result {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 ทดสอบ Session และ API</h1>
+
+    <div>
+        <button onclick="testSession()">ทดสอบ Session API</button>
+        <button onclick="testLocalStorage()">ตรวจสอบ localStorage</button>
+        <button onclick="testAcademicYears()">ทดสอบ Academic Years API</button>
+        <button onclick="clearAll()">ล้างข้อมูลทั้งหมด</button>
+    </div>
+
+    <h2>ผลการทดสอบ:</h2>
+    <div id="results"></div>
+
+    <script>
+        async function testSession() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<div class="result">กำลังทดสอบ...</div>';
+
+            try {
+                const response = await fetch('/api/check-session');
+                const data = await response.json();
+
+                let html = `<div class="result ${data.authenticated ? 'success' : 'error'}">`;
+                html += `<strong>Session API Response:</strong>\n`;
+                html += JSON.stringify(data, null, 2);
+                html += `\n\n<strong>สถานะ:</strong> `;
+
+                if (data.authenticated && data.user) {
+                    html += `✅ เข้าสู่ระบบสำเร็จ\n`;
+                    html += `👤 ชื่อ: ${data.user.firstname || 'N/A'} ${data.user.lastname || 'N/A'}\n`;
+                    html += `📧 Email: ${data.user.email || 'N/A'}\n`;
+                    html += `🎭 Role: ${data.user.role || 'N/A'}\n`;
+
+                    if (data.user.role === 'owner') {
+                        html += `\n✅ คุณเป็น Owner - ควรเข้าหน้า Academic Years ได้!`;
+                    } else {
+                        html += `\n❌ คุณไม่ใช่ Owner (Role: ${data.user.role}) - จะถูกเด้งออก`;
+                    }
+                } else {
+                    html += `❌ ไม่ได้เข้าสู่ระบบ`;
+                }
+
+                html += `</div>`;
+                results.innerHTML = html;
+            } catch (error) {
+                results.innerHTML = `<div class="result error">
+                    <strong>❌ เกิดข้อผิดพลาด:</strong>\n${error.message}
+                </div>`;
+            }
+        }
+
+        function testLocalStorage() {
+            const results = document.getElementById('results');
+            const user = localStorage.getItem('loggedInUser');
+
+            let html = `<div class="result ${user ? 'success' : 'error'}">`;
+            html += `<strong>localStorage Data:</strong>\n`;
+
+            if (user) {
+                try {
+                    const userData = JSON.parse(user);
+                    html += JSON.stringify(userData, null, 2);
+                    html += `\n\n<strong>สถานะ:</strong> ✅ พบข้อมูลใน localStorage`;
+                } catch (e) {
+                    html += `❌ ข้อมูลใน localStorage ผิดรูปแบบ`;
+                }
+            } else {
+                html += `❌ ไม่พบข้อมูลใน localStorage`;
+            }
+
+            html += `</div>`;
+            results.innerHTML = html;
+        }
+
+        async function testAcademicYears() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<div class="result">กำลังทดสอบ...</div>';
+
+            try {
+                // ทดสอบ API academic years
+                const response = await fetch('/api/academic-years/active');
+
+                let html = `<div class="result">`;
+                html += `<strong>Academic Years API:</strong>\n`;
+                html += `Status: ${response.status} ${response.statusText}\n\n`;
+
+                if (response.ok) {
+                    const data = await response.json();
+                    html += JSON.stringify(data, null, 2);
+                    html += `\n\n✅ API ทำงานได้ปกติ`;
+                } else if (response.status === 404) {
+                    html += `⚠️ ไม่พบปีการศึกษาที่ active (นี่เป็นเรื่องปกติถ้ายังไม่ได้สร้าง)`;
+                } else {
+                    const text = await response.text();
+                    html += `❌ Error: ${text}`;
+                }
+
+                html += `</div>`;
+                results.innerHTML = html;
+            } catch (error) {
+                results.innerHTML = `<div class="result error">
+                    <strong>❌ เกิดข้อผิดพลาด:</strong>\n${error.message}
+                </div>`;
+            }
+        }
+
+        function clearAll() {
+            if (confirm('ต้องการล้างข้อมูลทั้งหมดและออกจากระบบ?')) {
+                localStorage.clear();
+                sessionStorage.clear();
+                document.getElementById('results').innerHTML =
+                    '<div class="result success">✅ ล้างข้อมูลเรียบร้อย กรุณาล็อกอินใหม่</div>';
+
+                setTimeout(() => {
+                    window.location.href = '/index.html';
+                }, 2000);
+            }
+        }
+
+        // ทดสอบอัตโนมัติเมื่อโหลดหน้า
+        window.addEventListener('load', () => {
+            testSession();
+        });
+    </script>
+</body>
+</html>

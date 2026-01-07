@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>คำร้องขอลา - HR System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="CSS/user_request.css" rel="stylesheet">
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="profile">
+            <img id="sidebarProfilePic" src="/uploads/default.png" alt="Profile" class="profile-pic">
+            <div>
+                <h3 id="username">กำลังโหลด...</h3>
+                <h4 id="subjectname">กำลังโหลด...</h4>
+            </div>
+        </div>
+        <nav class="menu">
+            <a href="dashboard.html">📊 หน้าหลัก</a>
+            <a href="user_request.html">📝 ยื่นคำร้อง</a>
+            <a href="cal.html">💰 คำนวนเงินเดือน</a>
+            <a href="headsubrequests.html" style="display: none;">✅ อนุมัติคำร้อง</a>
+            <a href="user_status.html">📋 ติดตามคำร้อง</a>
+            <a href="profile.html">👤 แก้ไขโปรไฟล์</a>
+            <button onclick="logout()" type="button">🚪 ออกจากระบบ</button>
+        </nav>
+    </div>
+
+    <div class="main-content">
+
+        <div class="academic-year-banner" id="academicYearBanner">
+            <div class="banner-content">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                <span>ปีการศึกษาปัจจุบัน: <strong id="currentAcademicYear">กำลังโหลด...</strong></span>
+            </div>
+        </div>
+
+        <div class="header-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+        </div>
+
+        <h1>คำร้องขอลา</h1>
+        <p class="subtitle">กรุณากรอกรายละเอียดการลาของท่าน</p>
+
+        <div class="user-info">
+            <h2>
+                <span>ข้อมูลผู้ขอลา</span>
+                <span class="status-badge">ล็อกอินแล้ว</span>
+            </h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">ชื่อ-นามสกุล</div>
+                    <div class="info-value" id="rename" aria-live="polite">-</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">รหัสพนักงาน</div>
+                    <div class="info-value" id="reid" aria-live="polite">-</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">ตำแหน่ง</div>
+                    <div class="info-value" id="repo" aria-live="polite">-</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">จำนวนครั้งที่ลา</div>
+                    <div class="info-value" id="recount" aria-live="polite">-</div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="leave-form">
+            <form id="leaveRequestForm" novalidate>
+                <div class="form-group">
+                    <label for="leaveType">ประเภทการลา <span class="required" aria-label="จำเป็น">*</span></label>
+                    <select id="leaveType" name="leaveType" class="form-control" required aria-describedby="leaveTypeHelp">
+                        <option value="" disabled selected>-- เลือกประเภทการลา --</option>
+                        <option value="sick">ลาป่วย</option>
+                        <option value="personal">ลากิจ</option>
+                        <option value="maternity">ลาคลอดบุตร</option>
+                        <option value="training">ลาฝึกอบรม/สัมมนา</option>
+                    </select>
+                    <div id="leaveTypeHelp" class="sr-only">เลือกประเภทการลาที่ต้องการ</div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="startDate">วันที่เริ่มลา <span class="required" aria-label="จำเป็น">*</span></label>
+                        <input
+                            type="date"
+                            id="startDate"
+                            name="startDate"
+                            class="form-control"
+                            required
+                            aria-describedby="startDateHelp"
+                        >
+                        <div id="startDateHelp" class="sr-only">เลือกวันที่เริ่มต้นการลา</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="endDate">วันที่สิ้นสุด <span class="required" aria-label="จำเป็น">*</span></label>
+                        <input
+                            type="date"
+                            id="endDate"
+                            name="endDate"
+                            class="form-control"
+                            required
+                            aria-describedby="endDateHelp"
+                        >
+                        <div id="endDateHelp" class="sr-only">เลือกวันที่สิ้นสุดการลา</div>
+                    </div>
+                </div>
+
+                <div id="leaveSummary" class="leave-summary" style="display: none;">
+                    <h3>สรุปการลา</h3>
+                    <div class="summary-grid">
+                        <div class="summary-item">
+                            <span class="summary-label">วันทั้งหมด:</span>
+                            <span class="summary-value" id="totalDays">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">วันทำงาน (หักวันลา):</span>
+                            <span class="summary-value highlight" id="workingDays">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">วันหยุดสุดสัปดาห์:</span>
+                            <span class="summary-value" id="weekends">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">วันหยุดนักขัตฤกษ์:</span>
+                            <span class="summary-value" id="publicHolidays">-</span>
+                        </div>
+                    </div>
+                    <div class="calculation-note">
+                        <strong>หมายเหตุ:</strong> ระบบจะหักวันลาเฉพาะ <strong>วันทำงาน</strong> เท่านั้น
+                        (ไม่นับวันเสาร์-อาทิตย์และวันหยุดนักขัตฤกษ์)
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="reason">เหตุผลการลา <span class="required" aria-label="จำเป็น">*</span></label>
+                    <textarea 
+                        id="reason" 
+                        name="reason" 
+                        rows="4" 
+                        class="form-control" 
+                        required 
+                        placeholder="โปรดระบุเหตุผลการลา..."
+                        aria-describedby="reasonHelp"
+                    ></textarea>
+                    <div id="reasonHelp" class="sr-only">กรอกเหตุผลในการลา</div>
+                </div>
+
+                <div class="checkbox-container">
+                    <input id="agreement" type="checkbox" required aria-describedby="agreementHelp">
+                    <label for="agreement">
+                        ข้าพเจ้าขอรับรองว่าข้อมูลที่ให้ไว้เป็นความจริงทุกประการ
+                    </label>
+                    <div id="agreementHelp" class="sr-only">ยืนยันความถูกต้องของข้อมูล</div>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <span aria-hidden="true">📤</span>
+                    ส่งคำร้องขอลา
+                </button>
+            </form>
+        </div>
+    </div>
+
+
+    <div id="messageContainer" role="alert" aria-live="assertive" style="display: none;"></div>
+
+
+    <div class="sr-only">
+        <div aria-live="polite" id="loadingStatus">กำลังโหลดข้อมูล...</div>
+    </div>
+
+
+    <script src="JS/mobile-menu.js"></script>
+    <script src="JS/user_request.js"></script>
+
+
+    <style>
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        
+        /* Message Container Styles */
+        #messageContainer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            max-width: 300px;
+            padding: 15px;
+            border-radius: 8px;
+            z-index: 2000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            font-family: 'Prompt', sans-serif;
+        }
+        
+        #messageContainer.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        #messageContainer.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        /* Mobile adjustments for message container */
+        @media (max-width: 480px) {
+            #messageContainer {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                max-width: none;
+                font-size: 14px;
+            }
+        }
+        
+        /* Form validation styles */
+        /* Removed red and green borders for validation */
+        
+        /* Loading state */
+        .btn-submit:disabled {
+            position: relative;
+            color: transparent;
+        }
+        
+        .btn-submit:disabled::after {
+            content: "กำลังส่ง...";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: inherit;
+        }
+
+        /* Leave Summary Styles */
+        .leave-summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .leave-summary h3 {
+            margin: 0 0 15px 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .summary-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .summary-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .summary-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .summary-value.highlight {
+            color: #ffd700;
+            font-size: 1.8rem;
+        }
+
+        .calculation-note {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .calculation-note strong {
+            color: #ffd700;
+        }
+
+        @media (max-width: 768px) {
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</body>
+</html>

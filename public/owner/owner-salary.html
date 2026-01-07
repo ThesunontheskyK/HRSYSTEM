@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>การเงิน - HR System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.2.96/css/materialdesignicons.min.css">
+    <!-- Common CSS (สำหรับ Sidebar และ Mobile Menu) -->
+    <link rel="stylesheet" href="CSS/owner-common.css">
+    <link rel="stylesheet" href="CSS/owner-salary.css">
+</head>
+<body>
+    <!-- Mobile Menu Toggle (จะถูกสร้างโดย JavaScript) -->
+    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="เปิด/ปิดเมนู">
+        <i class="mdi mdi-menu"></i>
+    </button>
+
+    <!-- Mobile Overlay (จะถูกสร้างโดย JavaScript) -->
+
+    <!-- Sidebar -->
+       <div class="sidebar">
+      <div class="profile">
+        <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="Profile" class="profile-pic">
+        <div>
+          <h3 id="username">กำลังโหลด...</h3>
+          <h4 id="subjectname">ผู้บริหาร</h4>
+        </div>
+      </div>
+      <nav class="menu">
+        <a href="owner-dashboard.html" class="active" aria-current="page">
+          <i class="mdi mdi-view-dashboard me-2"></i> หน้าหลัก
+        </a>
+        <a href="owner-myemp.html">
+          <i class="mdi mdi-account-group me-2"></i> จัดการพนักงาน
+        </a>
+        <a href="owner-status.html" >
+          <i class="mdi mdi-file-document me-2"></i> อนุมัติคำร้อง
+        </a>
+        <a href="owner-check.html">
+          <i class="mdi mdi-calendar-check me-2"></i> การเข้างาน
+        </a>
+        <a href="owner-salary.html">
+          <i class="mdi mdi-calculator me-2"></i> การเงิน
+        </a>
+        <a href="owner-academic-years.html">
+          <i class="mdi mdi-calendar-multiple me-2"></i> จัดการปีการศึกษา
+        </a>
+        <button onclick="logout()" type="button">
+          <i class="mdi mdi-logout me-2"></i> ออกจากระบบ
+        </button>
+      </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="mdi mdi-calculator"></i> ระบบการเงินโรงเรียน</h1>
+            <p>จัดการเงินเดือนและข้อมูลการเงินของบุคลากร</p>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="color: #27ae60;">
+                    <i class="mdi mdi-account-group"></i>
+                </div>
+                <div class="stat-value" id="totalEmployees">-</div>
+                <div class="stat-label">บุคลากรทั้งหมด</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="color: #3498db;">
+                    <i class="mdi mdi-cash-multiple"></i>
+                </div>
+                <div class="stat-value" id="totalSalary">-</div>
+                <div class="stat-label">เงินเดือนรวม/เดือน</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon" style="color: #e74c3c;">
+                    <i class="mdi mdi-alert-circle-outline"></i>
+                </div>
+                <div class="stat-value" id="attendanceIssuesCount">-</div>
+                <div class="stat-label">การขาด ลา มาสาย  (ในเดือนนี้)</div>
+            </div>
+        </div>
+
+        <!-- Main Card -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title">
+                    <i class="mdi mdi-account-cash"></i>
+                    รายการบุคลากรและเงินเดือน
+                </span>
+                <div class="controls">
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="ค้นหาชื่อพนักงาน...">
+                        <i class="mdi mdi-magnify"></i>
+                    </div>
+                    <select id="roleFilter" class="filter-select">
+                        <option value="">ทุกตำแหน่ง</option>
+                        <option value="user">ครู/พนักงาน</option>
+                        <option value="admin">ผู้บริหาร</option>
+                    </select>
+                    <button class="btn btn-success" onclick="refreshData()">
+                        <i class="mdi mdi-refresh"></i> รีเฟรช
+                    </button>
+                </div>
+            </div>
+
+            <div id="loadingIndicator" class="loading">
+                <div class="spinner"></div>
+                <p>กำลังโหลดข้อมูล...</p>
+            </div>
+
+            <div id="employeeTableContainer" class="table-container" style="display: none;">
+                <table id="employeeTable">
+                    <thead>
+                        <tr>
+                            <th><i class="mdi mdi-identifier"></i> รหัส</th>
+                            <th><i class="mdi mdi-account"></i> ชื่อ-นามสกุล</th>
+                            <th><i class="mdi mdi-badge-account"></i> ตำแหน่ง</th>
+                            <th><i class="mdi mdi-school"></i> หมวดวิชา</th>
+                            <th><i class="mdi mdi-cash"></i> เงินเดือนฐาน</th>
+                            <th><i class="mdi mdi-check-circle"></i> สถานะ</th>
+                            <th><i class="mdi mdi-cog"></i> การจัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="employeeTableBody">
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div class="empty-icon"><i class="mdi mdi-account-off"></i></div>
+                <h3>ไม่พบข้อมูลพนักงาน</h3>
+                <p>ไม่มีข้อมูลพนักงานที่ตรงกับเงื่อนไขการค้นหา</p>
+            </div>
+        </div>
+
+        <!-- Monthly Expenses Card -->
+        <div class="card">
+            <div class="card-header">
+                <span class="card-title">
+                    <i class="mdi mdi-calendar-month"></i>
+                    บันทึกค่าใช้จ่ายรายเดือน
+                </span>
+                <div class="controls">
+                    <select id="expenseYearFilter" class="filter-select">
+                        <!-- Options will be populated by JS -->
+                    </select>
+                    <button class="btn btn-success" onclick="exportMonthlyExpensesToCSV()">
+                        <i class="mdi mdi-download"></i> Export CSV
+                    </button>
+                </div>
+            </div>
+
+            <div id="monthlyExpensesLoading" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>กำลังโหลดข้อมูล...</p>
+            </div>
+
+            <div id="monthlyExpensesTableContainer" class="table-container">
+                <table id="monthlyExpensesTable">
+                    <thead>
+                        <tr>
+                            <th><i class="mdi mdi-calendar"></i> เดือน</th>
+                            <th><i class="mdi mdi-account-group"></i> จำนวนพนักงาน</th>
+                            <th><i class="mdi mdi-cash"></i> ค่าใช้จ่ายรวม (บาท)</th>
+                            <th><i class="mdi mdi-update"></i> อัพเดทล่าสุด</th>
+                        </tr>
+                    </thead>
+                    <tbody id="monthlyExpensesTableBody">
+                        <!-- Data will be populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="empty-state" id="monthlyExpensesEmptyState" style="display: none;">
+                <div class="empty-icon"><i class="mdi mdi-chart-line-variant"></i></div>
+                <h3>ไม่พบข้อมูลค่าใช้จ่ายรายเดือน</h3>
+                <p>ยังไม่มีการบันทึกค่าใช้จ่ายรายเดือนในปีที่เลือก</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Employee & Payroll Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="mdi mdi-account-edit"></i> จัดการข้อมูลพนักงานและเงินเดือน</h3>
+                <button class="close" onclick="closeModal()">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div id="modalAlert"></div>
+                
+                <!-- Tabs -->
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('employee')">
+                        <i class="mdi mdi-account"></i> ข้อมูลพนักงาน
+                    </button>
+                    <button class="tab" onclick="switchTab('payroll')">
+                        <i class="mdi mdi-cash-multiple"></i> จัดการเงินเดือน
+                    </button>
+                    <button class="tab" onclick="switchTab('history')">
+                        <i class="mdi mdi-history"></i> ประวัติการเปลี่ยนแปลง
+                    </button>
+                </div>
+
+                <!-- Employee Tab -->
+                <div id="employeeTab" class="tab-content active">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label"><i class="mdi mdi-account"></i> ชื่อ</label>
+                            <input type="text" id="editFirstName" class="form-control">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label"><i class="mdi mdi-account"></i> นามสกุล</label>
+                            <input type="text" id="editLastName" class="form-control">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label"><i class="mdi mdi-email"></i> อีเมล</label>
+                            <input type="email" id="editEmail" class="form-control">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label"><i class="mdi mdi-phone"></i> เบอร์โทร</label>
+                            <input type="tel" id="editTel" class="form-control">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label"><i class="mdi mdi-calendar"></i> อายุ</label>
+                            <input type="number" id="editAge" class="form-control">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label"><i class="mdi mdi-cash"></i> เงินเดือนฐาน (บาท)</label>
+                            <input type="number" id="editBaseSalary" class="form-control" step="0.01">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payroll Tab -->
+                <div id="payrollTab" class="tab-content">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label"><i class="mdi mdi-cash"></i> เงินเดือนฐาน (บาท)</label>
+                            <input type="number" id="payrollBaseSalary" class="form-control" step="0.01" readonly>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label"><i class="mdi mdi-gift"></i> โบนัส (บาท)</label>
+                            <input type="number" id="payrollBonus" class="form-control" step="0.01" min="0" value="0">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label"><i class="mdi mdi-calendar"></i> เดือน/ปี สำหรับคำนวด</label>
+                            <input type="month" id="payrollMonth" class="form-control">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label"><i class="mdi mdi-calendar-check"></i> วันที่จ่าย</label>
+                            <input type="date" id="payrollPayDate" class="form-control">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label"><i class="mdi mdi-minus-circle"></i> หักอื่นๆ (บาท)</label>
+                            <input type="number" id="payrollOtherDeduction" class="form-control" step="0.01" min="0" value="0">
+                        </div>
+                    </div>
+
+                    <!-- Attendance Summary -->
+                    <div class="attendance-summary">
+                        <h4><i class="mdi mdi-alert-circle"></i> สรุปการลาและขาดงาน</h4>
+                        <div id="attendanceSummary">
+                            <div class="payroll-row">
+                                <span>การลาที่อนุมัติ (วันทำงาน):</span>
+                                <span id="approvedLeaveCount">0 วันทำงาน (0 ครั้ง)</span>
+                            </div>
+                            <div class="payroll-row">
+                                <span>การขาดงาน:</span>
+                                <span id="absentCount">0 ครั้ง</span>
+                            </div>
+                            <div class="payroll-row">
+                                <span>เข้างานสาย:</span>
+                                <span id="lateCount">0 ครั้ง</span>
+                            </div>
+                            <div class="payroll-row" style="color: #e74c3c; font-weight: 600;">
+                                <span>รวมวันที่หัก:</span>
+                                <span id="totalDeductionCount">0 วัน</span>
+                            </div>
+                            <div class="payroll-row" style="color: #e74c3c; font-weight: 700;">
+                                <span>ยอดหัก (300฿/วัน):</span>
+                                <span id="calculatedDeduction">0฿</span>
+                            </div>
+                        </div>
+                        <div style="margin-top: 10px; padding: 10px; background: rgba(52, 152, 219, 0.1); border-radius: 5px; font-size: 12px; border-left: 3px solid #3498db;">
+                            <i class="mdi mdi-information"></i>
+                            <strong>หมายเหตุ:</strong> ระบบคำนวณวันลาเฉพาะวันทำงาน (ไม่นับเสาร์-อาทิตย์และวันหยุดราชการ) หักอัตรา 300 บาทต่อวัน
+                        </div>
+                    </div>
+
+                    <div class="payroll-summary">
+                        <h4><i class="mdi mdi-calculator"></i> สรุปการคำนวด</h4>
+                        <div class="payroll-row">
+                            <span>เงินเดือนฐาน:</span>
+                            <span id="summaryBaseSalary">฿0</span>
+                        </div>
+                        <div class="payroll-row">
+                            <span>โบนัส:</span>
+                            <span id="summaryBonus">฿0</span>
+                        </div>
+                        <div class="payroll-row">
+                            <span>หักการลา/ขาด/สาย:</span>
+                            <span id="summaryAttendanceDeduction">-฿0</span>
+                        </div>
+                        <div class="payroll-row">
+                            <span>หักอื่นๆ:</span>
+                            <span id="summaryOtherDeduction">-฿0</span>
+                        </div>
+                        <div class="payroll-row total">
+                            <span>เงินเดือนสุทธิ:</span>
+                            <span id="summaryTotalSalary">฿0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History Tab -->
+                <div id="historyTab" class="tab-content">
+                    <div id="salaryChangeHistoryContainer">
+                        <div style="text-align: center; padding: 40px; color: #7f8c8d;">
+                            <i class="mdi mdi-loading mdi-spin" style="font-size: 48px;"></i>
+                            <p style="margin-top: 10px;">กำลังโหลดประวัติ...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn btn-primary" onclick="saveEmployeeChanges()">
+                        <i class="mdi mdi-content-save"></i> บันทึกข้อมูลพนักงาน
+                    </button>
+                    <button class="btn btn-success" onclick="createPayrollRecord()">
+                        <i class="mdi mdi-cash-check"></i> ยืนยันสร้างเงินเดือน
+                    </button>
+                    <button class="btn btn-secondary" onclick="closeModal()">
+                        <i class="mdi mdi-close"></i> ยกเลิก
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="JS/common.js"></script>
+    <script src="JS/mobile-menu.js"></script>
+    <script src="JS/owner-salary.js"></script>
+</body>
+</html>
