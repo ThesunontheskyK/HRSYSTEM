@@ -52,7 +52,7 @@ Authentication: Google OAuth 2.0 & Session
 
 
 
-Encryption: Bcrypt สำหรับการเข้ารหัสรหัสผ่าน
+Encryption: Bcrypt + Salt สำหรับการเข้ารหัสรหัสผ่าน
 
 👥 ขอบเขตสิทธิ์ผู้ใช้งาน (User Roles)
 บทบาท	คำอธิบายสิทธิ์การใช้งาน
