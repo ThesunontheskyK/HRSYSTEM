@@ -20,6 +20,7 @@ Responsive Design: ใช้งานได้ทุกอุปกรณ์ ท
 
 
 Google Integration: รองรับการเข้าสู่ระบบผ่านบัญชี Google เพื่อความสะดวกและปลอดภัย
+
 🛠 เทคโนโลยีที่เลือกใช้ (Tech Stack)
 Frontend
 
