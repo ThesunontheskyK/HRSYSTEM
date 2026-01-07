@@ -1,4 +1,4 @@
-      🏥 HR System: Joseph Thiphawan School
+   🏥 HR System: Joseph Thiphawan School
 
 ระบบบริหารจัดการทรัพยากรบุคคลยุคใหม่ เพื่อการเปลี่ยนผ่านสู่ดิจิทัลอย่างเต็มรูปแบบ
 
