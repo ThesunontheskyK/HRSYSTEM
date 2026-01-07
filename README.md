@@ -1,4 +1,4 @@
-<img width="128" height="128" alt="image" src="https://github.com/user-attachments/assets/5acf10a9-9897-4d96-b736-225c128df15c" />🏥 HR System: Joseph Thiphawan School
+      🏥 HR System: Joseph Thiphawan School
 
 ระบบบริหารจัดการทรัพยากรบุคคลยุคใหม่ เพื่อการเปลี่ยนผ่านสู่ดิจิทัลอย่างเต็มรูปแบบ
 
